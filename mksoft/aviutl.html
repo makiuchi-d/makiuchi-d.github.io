@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>AviUtlプラグイン</title>
+<link rev="made" href="mailto:makki_d210@yahoo.co.jp"> 
+<link rel="index" href="index.html">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<h1>AviUtlプラグイン</h1>
+<p id="summary">
+動画編集ソフトAviUtlのプラグインです。AviUtlの公式サイトはこちら→
+<a href="http://spring-fragrance.mints.ne.jp/aviutl/">AviUtlのお部屋</a>
+</p>
+<hr>
+
+<h2><a name="kaleido" href="arc/kaleido_002.zip">◇万華鏡 フィルタ</a>
+<em class="new"> NEW&quot; </em>
+</h2>
+<p>
+万華鏡エフェクトを加えます。
+</p>
+<dl>
+<dt><strong>version 0.02</strong> (2009/06/21公開;2010/09/12更新)</dt>
+<dd>固定小数演算にして高速化</dd>
+</dl>
+
+<h2><a name="sub24fps" href="arc/sub24fps_001a.zip">◇自動24fps(代理)フィルタ</a>
+</h2>
+<p>
+AviUtl内蔵の自動24fpsを内部で呼び出し、通常のビデオフィルタとして使ってしまいます。<br>
+フィルタ順序の変更やら２回掛やらいろいろ可能になります。
+</p>
+<dl>
+<dt><strong>version 0.01a</strong>  (2005/03/08公開;2005/03/13更新)</dt>
+<dd>キャッシュサイズの見直しとフィルタフラグの追加</dd>
+</dl>
+
+<h2><a name="delcycle" href="arc/delcycle_001.zip">◇周期間引きプラグイン</a>
+</h2>
+<p>
+24fps周期に従って間引きフレームを決定します。<br>
+ノンインターレースの24fpsの映像を一定周期で間引きたい時などに有効です。
+</p>
+<dl>
+<dt><strong>version 0.01</strong> (2004/02/05公開)</dt>
+<dd><em>[注意] AviUtl0.99では動きません。0.98系専用です。</em></dd>
+</dl>
+
+<h2><a name="field" href="arc/field_002.zip">◇フィールド分離・結合フィルタ</a>
+</h2>
+<p>
+フィールドを分離・結合します。<br>
+インターレース未対応のフィルタでフィールドごとに処理したい時に有効です。
+</p>
+<dl>
+<dt><strong>version 0.02</strong> (2003/11/12公開;2004/09/17更新)</dt>
+<dd>分離モードを選択できるようにした<br>フィールドの配置を逆にする機能を追加</dd>
+</dl>
+
+<h2><a name="warpsharp" href="arc/warpsharp_003.zip">◇WarpSharpフィルタ</a>
+<span class="append">[<a href="src/index.html#aviutl_warpsharp">ソースコード(GPL)</a>]</span>
+</h2>
+<p>
+言わずと知れたAviSynthのWarpSharpの移植版です。→ <a href="http://www.geocities.co.jp/SiliconValley-PaloAlto/2382/">オリジナル配布場所</a><br>
+輪郭線を細くすっきりさせます。
+</p>
+<dl>
+<dt><strong>version 0.03</strong> (2003/10/19公開；2008/06/28更新)</dt>
+<dd>適用範囲を指定する機能を拡張。</dd>
+<dd>細かいバグ修正</dd>
+<dd>メモリ使用の効率化</dd>
+</dl>
+<p>
+零様がマルチスレッド化、SIMD化してくださいました。
+<a href="http://typezero.ddo.jp/auf/">AviUtlプラグイン ＠零</a><br>
+BS様が更なる最適化をしてくださいました。
+<a href="http://find.2ch.net/search?q=%E6%9D%BF%EF%BC%9A%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2+AviUtl&sort=0">2ちゃんねる ソフトウェア板 AviUtl総合スレッド</a>
+(<a href="http://www40.atwiki.jp/aviutl41991/pages/37.html">再配布元</a>)
+</p>
+
+<h2><a name="spectrum" href="arc/spectrum_001.zip">◇スペクトラムアナライザープラグイン</a>
+</h2>
+<p>
+音声信号を周波数ごとに分解し、その分布を表示します。
+</p>
+<dl>
+<dt><strong>version 0.01</strong> (2003/07/14公開)</dt>
+</dl>
+
+<h2><a name="move" href="arc/move_003.zip">◇移動ツールプラグイン</a>
+</h2>
+<p>
+「編集→基本機能→次のキーフレームに移動」などをボタンで行えるようにします。
+</p>
+<dl>
+<dt><strong>version 0.03</strong> (2003/05/02公開；2003/12/26更新)</dt>
+<dd>指定フレーム数移動を追加。</dd>
+</dl>
+
+<h2><a name="delogo" href="arc/delogo_013.zip">◇透過性ロゴフィルタ</a>
+<span class="append">[<a href="logodata.html">ロゴデータ置き場</a>]</span>
+</h2>
+<p>
+BS 1/2, Animax などの半透明ロゴを付加または除去します →
+<a href="delogo.html">サンプル画像</a>
+</p>
+<dl>
+<dt><strong>version 0.13</strong> (2003/04/29公開；2009/01/24更新)</dt>
+<dd>スライダの最大最小デフォルト値を変更できるようにした</dd>
+<dd>※ロゴデータは以前のバージョンと上位互換を保っています。<br>
+　すでに導入されている方はlogodata.ldpを上書きする必要はありません。</dd>
+</dl>
+
+<h2><a name="logoscan" href="arc/logoscan_007.zip">◇ロゴ解析プラグイン</a></h2>
+<p>
+ロゴの含まれる画像から透過性ロゴフィルタ用のロゴデータを作成します →
+<a href="logoscan.html">使い方</a>
+</p>
+<dl>
+<dt><strong>version 0.07</strong> (2003/04/29公開；2008/01/07更新)</dt>
+<dd>ロゴサイズの制限を撤廃した</dd>
+<dd>ロゴファイルの最大データ数を拡張</dd>
+</dl>
+
+<h2><a name="delcomp" href="arc/delcomp.zip">◇間引きフレーム補完フィルタ</a>
+</h2>
+<p>
+間引かれるフレームを、次または前のフレームに任意の不透明度で重ねます
+</p>
+<dl>
+<dt><strong>version 0.01</strong> (2003/04/27公開；2003/04/29更新)</dt>
+</dl>
+
+<hr>
+<p id="link">
+[<a href="index.html">TOP</a>]
+[<del>BBS</del>]
+</p>
+
+<p class="copyright">
+<a href="old/index.html">過去のバージョン</a>
+<a href="src/index.html#aviutl">ソースファイル</a><br>
+雑誌等への掲載は事後でもいいので連絡ください。
+(C)<a href="mailto:makki_d210@yahoo.co.jp">MakKi</a><br>
+</p>
+
+</body>
+</html>

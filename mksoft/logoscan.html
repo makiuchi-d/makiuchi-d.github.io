@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ロゴ解析プラグイン</title>
+<link rev="made" href="mailto:makki_d210@yahoo.co.jp"> 
+<link rel="index" href="index.html">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<h1>ロゴ解析プラグイン</h1>
+<p id="summary">
+ロゴ解析プラグインの使い方です。
+[<a href="aviutl.html#logoscan">ロゴ解析プラグイン</a>]
+</p>
+<hr>
+<h2>1. ロゴ解析に使える画像をAviUtlで読み込みます</h2>
+<p>
+ロゴの背景が単色の画像しかつかえません。様々な背景色の画像がないと正確に解析できません。<br>
+また、フェードなどで透明度が変化しているものは除く必要があります。
+</p>
+<dl>
+<dt><strong>○</strong>このような背景が単一色の画像を全て読み込みます。</dt>
+<dd>
+<img src="img/lsgood1.jpg" width="218" height="153" alt="ok 1">
+<img src="img/lsgood2.jpg" width="218" height="153" alt="ok 2">
+<img src="img/lsgood3.jpg" width="218" height="153" alt="ok 3">
+</dd>
+<dt><del><strong>×</strong>背景が単一色でない画像は「選択範囲を削除」等で除いて下さい。</del></dt>
+<dd>
+このような画像が混じっていても、内部で判定して解析に使わないようにしました。(β03以降)<br>
+<img src="img/lsbad1.jpg" width="218" height="153" alt="bad 1">
+<img src="img/lsbad2.jpg" width="218" height="153" alt="bad 2">
+</dd>
+</dl>
+
+<h2>2. ロゴの範囲を選択します</h2>
+<p>
+フィルタを有効にするとマウス・トラックバーで画像範囲が選択できるようになります。
+</p>
+<dl>
+<dt>ロゴが完全に枠の中に入るように選択します。</dt>
+<dd><img src="img/lsgood4.jpg" width="218" height="153" alt="ロゴを囲む"></dd>
+</dl>
+
+<h2>3. ロゴ解析ボタンを押します</h2>
+<p>
+ボタンを押すと解析を開始します。<br>
+<img src="img/dlg1.jpg" width="320" height="180" alt="設定ウィンドウ">
+</p>
+
+<h2>4. 解析完了</h2>
+<p>
+背景色を変更しながらプレビューを確認し、ロゴの名称を入力します。<br>
+<img src="img/dlg2.jpg" width="283" height="207" alt="解析結果ウィンドウ">
+</p>
+<dl>
+<dt>送信ボタン</dt><dd>透過性ロゴフィルタに解析データを直接渡します</dd>
+<dt>保存ボタン</dt><dd>解析データをロゴデータファイル(*.lgd)として保存します</dd>
+<dt>閉じるボタン</dt><dd>ロゴ解析結果ダイアログを閉じます。</dd>
+</dl>
+
+<hr>
+
+<p id="link">
+[<a href="index.html">TOP</a>]
+[<del>BBS</del>]
+[<a href="aviutl.html">BACK</a>]
+</p>
+
+<p class="copyright">
+(C)<a href="mailto:makki_d210@yahoo.co.jp">MakKi</a>
+</p>
+
+</body>
+</html>
