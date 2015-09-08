@@ -1,0 +1,95 @@
+body {
+	background-color: #dcefef;
+	color: #000000;
+}
+
+img { border: 0; }
+
+h1 {
+	background-color: inherit;
+	color: red;
+	font-size: 155%;
+}
+.top h1 { font-size: 175%; }
+
+h2 {
+	font-size: 120%;
+	margin: 1em 0 0;
+}
+.top h2 {
+	margin: 1em 0;
+}
+
+h1.history, h2.history {
+	color: black;
+	background-color: inherit;
+	margin:0;
+	font-size: 100%;
+	font-weight: normal;
+}
+
+p { margin: 0 2em 2em; }
+p.count,p.copyright{
+	margin: 0;
+	text-align: right;
+	font-weight:bold;
+	font-size: 80%;
+}
+p#summary { margin: 0; }
+p#link { margin: 0;}
+p.history {
+	margin:0;
+	clear:both;
+}
+p.ad {
+	text-align: center;
+	font-size: 80%;
+}
+
+.hide {
+	margin: 30em 0 0;
+	font-size: 50%;
+	color: #dcefef;
+	background-color: inherit;
+}
+.hide a:link, .hide a:visited, .hide a:active {
+	color: #dcefef;
+	background-color: inherit;
+}
+.hide a:hover {
+	color: blue;
+	background-color: inherit;
+}
+
+dl {
+	margin: -2em 0 1em 2em;
+}
+em {
+	font-style: normal;
+	color: red;
+	background-color: inherit;
+}
+em.new {
+	font-size: 80%;
+	font-weight: bold;
+}
+span.append {
+	margin-left: 2em;
+	font-weight: normal;
+	font-size: 80%;
+}
+
+table.src {
+	margin: -2em 2em 1em;
+	caption-side: top;
+	border-collspase: separate;
+	border-width: 2px;
+	border-style: solid;
+	border-color: silver black black silver;
+}
+table.src th,table.src td {
+	border-width: 1px;
+	border-style: solid;
+	border-color: black silver silver black;
+}
+
