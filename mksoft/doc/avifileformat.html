@@ -1,0 +1,912 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>AVIファイルフォーマット</title>
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rev="made" href="mailto:makki_d210@yahoo.co.jp">
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+<body>
+<h1>AVIファイルフォーマット</h1>
+<dl>
+<dt>原著</dt><dd>Alexander Noé</dd>
+<dt>邦訳</dt><dd>MakKi</dd>
+</dl>
+<p>最終更新：2006年12月14日（訳：2007年1月9日）</p>
+
+<h2>邦訳について</h2>
+<p>
+この文書は<a href="http://www.alexander-noe.com/">Homepage - Alexander Noé</a>にて公開されている文書「<a href="http://www.alexander-noe.com/video/documentation/avi.pdf">AVI File Format</a>」をMakKiが個人的に翻訳したものですが，原著者の許諾が得られましたのでここに公開します．<br>
+翻訳版については煮るなり焼くなりしていただいて構いませんが，原著者にまで迷惑がかかるような行為はご遠慮願います．
+また，誤訳等の指摘は<a href="mailto:Makki_d210@yahoo.co.jp">MakKi</a>までお願いします．
+</p>
+<p>この文書が日本語圏の開発者の助けになれば幸いです．</p>
+
+<h2><a name="contents">目次</a></h2>
+<ul>
+<li>1 <a href="#1">はじめに</a>
+ <ul>
+ <li>1.1 <a href="#1.1">このAVIファイルの仕様書の意味</a></li>
+ <li>1.2 <a href="#1.2">基本データ構造</a>
+  <ul>
+  <li>1.2.1 <a href="#1.2.1">チャンク（Chunk）</a></li>
+  <li>1.2.2 <a href="#1.2.2">リスト（List）</a></li>
+  </ul>
+ </li>
+ <li>1.3 <a href="#1.3">AVIファイルの種類</a></li>
+ </ul>
+</li>
+<li>2 <a href="#2">AVIファイルの構造</a>
+ <ul>
+ <li>2.1 <a href="#2.1">ヘッダ</a>
+  <ul>
+  <li>2.1.1 <a href="#2.1.1">MainAVIHeader (avih)</a></li>
+  <li>2.1.2 <a href="#2.1.2">ストリームヘッダリスト（strl）の概要</a></li>
+  <li>2.1.3 <a href="#2.1.3">ストリームヘッダ要素: strh</a></li>
+  <li>2.1.4 <a href="#2.1.4">ストリームヘッダ要素: strf</a></li>
+  <li>2.1.5 <a href="#2.1.5">ストリームヘッダ要素: indx</a></li>
+  <li>2.1.6 <a href="#2.1.6">ストリームヘッダ要素: strn</a></li>
+  </ul>
+ </li>
+ </ul>
+</li>
+<li>3 <a href="#3">AVIインデックス</a>
+ <ul>
+ <li>3.1 <a href="#3.1">古い形式のインデックス</a></li>
+ <li>3.2 <a href="#3.2">Open-DMLインデックス</a>
+  <ul>
+  <li>3.2.1 <a href="#3.2.1">上位のインデックス（Super Index）</a></li>
+  <li>3.2.2 <a href="#3.2.2">スタンダードインデックス</a></li>
+  </ul>
+ </li>
+ <li>3.3 <a href="#3.3">Open-DMLインデックスの使い方</a></li>
+ </ul>
+</li>
+<li>4 <a href="#4">moviリスト</a></li>
+<li>5 <a href="#5">特別な配慮を必要とする音声形式</a>
+ <ul>
+ <li>5.1 <a href="#5.1">MP3</a></li>
+ <li>5.2 <a href="#5.2">AC3</a></li>
+ <li>5.3 <a href="#5.3">DTS</a></li>
+ <li>5.4 <a href="#5.4">VBR音声（概要）</a></li>
+ <li>5.5 <a href="#5.5">MPx VBR</a></li>
+ <li>5.6 <a href="#5.6">AAC</a></li>
+ <li>5.7 <a href="#5.7">VFR音声（AVIでのVorbisの格納）</a></li>
+ </ul>
+</li>
+<li>6 <a href="#6">AVIでの字幕</a></li>
+<li>7 <a href="#7">AVIファイル内の不要データ</a>
+ <ul>
+ <li>7.1 <a href="#7.1">固定ビットレート</a></li>
+ <li>7.2 <a href="#7.2">可変ビットレート</a></li>
+ </ul>
+</li>
+<li>8 <a href="#8">AVIのオーバーヘッド</a>
+ <ul>
+ <li>8.1 <a href="#8.1">概要</a></li>
+ <li>8.2 <a href="#8.2">チャンク数の取得</a>
+  <ul>
+  <li>8.2.1 <a href="#8.2.1">ビデオ</a></li>
+  <li>8.2.2 <a href="#8.2.2">音声</a></li>
+  <li>8.2.3 <a href="#8.2.3">実例</a></li>
+  </ul>
+ </li>
+ </ul>
+</li>
+</ul>
+
+<h2><a name="1">1</a> はじめに</h2>
+<h3><a name="1.1">1.1</a> このAVIファイルの仕様書の意味</h3>
+<p>
+AVIファイルフォーマットが登場してからかれこれ10年以上が経過した。しかしながら，AVIの構造だけでなく，不良デマルチプレクサや欠陥コーデックによる問題点とその回避法にまで言及している資料は皆無である．
+</p>
+<p>
+この文書の目標は，上記で述べたようにAVIファイルの構造の説明だけではなく，欠陥マルチプレクサ/デマルチプレクサ/デコーダが蔓延るなかで，どのようにしてAVIファイルを扱えばよいかについて特に念入りに説明することである．
+</p>
+
+<h3><a name="1.2">1.2</a> 基本データ構造</h3>
+<p>
+AVIファイル内には2種類の基本構造がある：
+</p>
+
+<h4><a name="1.2.1">1.2.1</a> チャンク（Chunk）</h4>
+<pre>
+<code>typedef struct {
+  DWORD  dwFourCC
+  DWORD  dwSize
+  BYTE   data[dwSize]  // ヘッダや映像/音声データを格納する
+} CHUNK;
+</code></pre>
+
+<h4><a name="1.2.2">1.2.2</a> リスト（List）</h4>
+<pre>
+<code>typedef struct {
+  DWORD  dwList
+  DWORD  dwSize
+  DWORD  dwFourCC
+  BYTE   data[dwSize-4]  // リストやチャンクを格納する
+} LIST;
+</code></pre>
+
+<p>
+一つのチャンクはビデオ，音声または字幕のデータが格納され，<code>dwFourCC</code>にはストリーム番号を表す2桁の16進数とデータ形式を表す2文字（dc=ビデオ，wb=音声，tx=字幕）が格納される．
+<code>dwFourCC</code>および<code>dwSize</code>の値は両方の構造体で同じ意味を持つ：<br>
+<code>dwFourCC</code>はチャンクの種類を表し（例えば 'hdrl' は「ヘッダリスト」），
+<code>dwSize</code>はチャンクやリストの，<code>dwSize</code>より後ろのデータのサイズが格納される．
+リストの場合，この値のうち4バイトが<code>dwFourCC</code>に最初から使用されている！
+</p>
+<p>
+<code>dwList</code>の値は'RIFF'（RIFFリスト）または'LIST'（リスト）である．
+</p>
+
+<h3><a name="1.3">1.3</a> AVIファイルの種類</h3>
+<p>基本的には，AVIファイル形式は3種類に分けられる：</p>
+<dl>
+<dt>AVI 1.0</dt>
+<dd>オリジナルの，古いAVI形式</dd>
+<dt>Open-DML</dt>
+<dd>
+AVI形式を拡張したもの．1996年2月28日にバージョン1.02が制定された．
+重要な改良として以下が挙げられる：
+<ul>
+ <li>ファイルサイズがほぼ無制限（NTFSの許容範囲よりはるかに大きい）</li>
+ <li>33%のオーバーヘッド削減</li>
+ <!-- MicrosoftのAVIスプリッタでもストリーム10本以上が機能する（AVI 1.0でも同様に可能ではあったが，MicrosoftのAVIスプリッタでは機能しなかった）-->
+</ul>
+</dd>
+<dt>複合型（ハイブリッド）</dt>
+<dd>
+互換性のために<em>古典的インデックス</em>を余分に含んだOpen-DMLファイル．
+この単語は“公式な”ものではないが，このファイルについて特に説明する．
+RIFFリストを一つしか含まない複合型ファイルはどの種類のAVIファイルとしても扱うことができる．
+</dd>
+</dl>
+<p>
+この文書はOpen-DML 1.02ファイル形式の主要な部分とともに，適切な（かつフリーで入手可能な）フィルタがインストールされていれば一般的なプレイヤで動作するいくつかの付け足し（ハック）も説明する．
+AVI 1.0には無いOpen-DMLのみの特徴については，Open-DMLのみと記す．
+</p>
+
+<h2><a name="2">2</a> AVIファイルの構造</h2>
+<p>
+<code>dwFourCC = 'AVI '</code> であるRIFFリストを「RIFF-AVIリスト」と呼ぶ．
+また，<code>dwFourCC = 'AVIX'</code> のRIFFリストは「RIFF-AVIXリスト」と呼ぶ．
+</p>
+<p>全てのAVIファイルは以下の構造をとる：</p>
+<pre>
+<code>RIFF AVI        // 必須
+{ RIFF AVIX }   // Open-DMLのみ
+</code></pre>
+<p>
+これらのリストのサイズの上限は，<code>uint32</code>の上限とは異なり，4GBではない．
+</p>
+<ul>
+ <li>AVI 1.0の場合： <code>size(RIFF-AVI) &lt; 2 GB</code></li>
+ <li>Open-DMLの場合：
+ <ul>
+  <li><code>size(RIFF-AVI) &lt; 1 GB</code>（!!）（Virtual Dubのようないくつかのソフトでは 2GBとしている）</li>
+  <li><code>size(RIFF-AVIX) &lt; 2 GB</code></li>
+ </ul>
+ </li>
+</ul>
+<p>
+<em>古典的インデックス</em>（<a href="#3.1">3.1節</a>を参照）が見つからないから最初のRIFF-AVIを全部読み込ませろとWindows XPがせがむ時や，<em>古典的インデックス</em>がオーバーヘッドになってしまう時は，RIFF-AVIリストを出来るだけ小さくすることを推奨する．
+</p>
+
+<h3><a name="2.1">2.1</a> ヘッダ</h3>
+<p>
+AVIファイルのヘッダ領域を次に示す：<br>
+<img src="headers.png" width="560" height="395" alt="ヘッダ領域の構造">
+</p>
+<p>続く項目ではこれらのリストやチャンクの意味を説明する．</p>
+
+<h4><a name="2.1.1">2.1.1</a> MainAVIHeader (avih)</h4>
+<p>この構造体は次のように定義される：</p>
+<pre>
+<code>typedef struct {
+    DWORD  dwMicroSecPerFrame;  // フレーム持続時間（または 0）
+    DWORD  dwMaxBytesPerSec;  // 転送レートの最大値
+    DWORD  dwPaddingGranularity;  // このサイズの倍数にパディングされる
+    DWORD  dwFlags;  // 固定フラグ
+    DWORD  dwTotalFrames;  // # ファイル内のフレーム数
+    DWORD  dwInitialFrames;
+    DWORD  dwStreams;
+    DWORD  dwSuggestedBufferSize;
+    DWORD  dwWidth;
+    DWORD  dwHeight;
+} MainAVIHeader;
+</code></pre>
+<p>
+残念なことに，これらの変数名は必ずしも値の意味を表しているとは<strong>言えない</strong>．
+</p>
+<dl>
+<dt><code>dwMicroSecPerFrame</code></dt>
+<dd>
+映像1フレームの持続時間がマイクロ秒単位で記される．
+この値は無視できるが（<a href="#2.1.3">ストリームヘッダ</a>を参照），AVI作成ソフトは正しい値を入れなければならない．<br>
+<strong>重要：</strong><em>AVIFrate</em>のような壊れたソフトは，ストリームヘッダのフレームレートは書き込むが，<code>dwMicroSecPerFrame</code>には書き込まない．
+したがって，この値を信用すべきではない！
+</dd>
+<dt><code>dwMaxBytesPerSec</code></dt>
+<dd>
+ファイル内のデータレートの最大値．
+この値は重要ではなく，また値を過信すべきではない．
+</dd>
+<dt><code>dwPaddingGranularity</code></dt>
+<dd>ファイルサイズはこの数値の倍数になるようにパディングを詰められる</dd>
+<dt><code>dwFlags</code></dt>
+<dd><a href="#avihdwflags">下記参照</a></dd>
+<dt><code>dwTotalFrames</code></dt>
+<dd>
+RIFF-AVIリストに含まれるビデオのフレーム数．
+（ファイルにRIFF-AVIXリストが含まれる時は，ファイル全体のフレーム数の合計を入れる<strong>べきではない</strong>．
+いくつかのソフトはファイル全体のフレーム数の合計を書き込むが，それはOpen-DML形式の仕様に明らかに違反している．
+すなわち，それらのソフトは欠陥品である．）
+あるAVIマルチプレクサはここに異常な値を書き込むため，この値も信頼すべきではない．
+</dd>
+<dt><code>dwInitialFrames</code></dt>
+<dd>無視する</dd>
+<dt><code>dwStreams</code></dt>
+<dd>ファイルに含まれるストリーム数</dd>
+<dt><code>dwSuggestedBufferSize</code></dt>
+<dd>
+ファイル中のチャンクを保持するために必要なバッファサイズ．
+この値を過信すべきではない．
+</dd>
+<dt><code>dwWidth</code></dt>
+<dd>ビデオストリームの幅</dd>
+<dt><code>dwHeight</code></dt>
+<dd>ビデオストリームの高さ</dd>
+</dl>
+
+<h5><a name="avihdwflags">MainAVIHeader::dwFlagsで利用可能なフラグ</a></h5>
+<dl>
+<dt><code>AVIF_HASINDEX</code></dt>
+<dd>ファイルはインデックスを持つ</dd>
+<dt><code>AVIF_MUSTUSEINDEX</code></dt>
+<dd>
+再生するビデオ/音声チャンクの順序はインデックスに示されており，再生する順序とファイル内での順序は異なっている可能性がある．
+</dd>
+<dt><code>AVIF_ISINTERLEAVED</code></dt>
+<dd>ストリーム同士は適切にインターリーブされている</dd>
+<dt><code>AVIF_WASCAPTUREFILE</code></dt>
+<dd>
+このファイルはキャプチャされたものである．
+適切にインターリーブされていないかもしれない．
+</dd>
+<dt><code>AVIF_COPYRIGHTED</code></dt>
+<dd>無視する</dd>
+<dt><code>AVIF_TRUSTCKTYPE</code>（Open-DMLのみ！）</dt>
+<dd>
+インデックス内のキーフレームフラグが信頼できることを示す．
+Open-DMLファイルでこのフラグが指定されていない時はキーフレームフラグが無効かもしれず，不完全なファイルをレンダリングする技術が必要になる．
+</dd>
+</dl>
+
+<h4><a name="2.1.2">2.1.2</a> ストリームヘッダリスト（strl）の概要</h4>
+<p>
+それぞれのストリームにつき，一つの<code>strl</code>リストが存在する．
+<code>hdrl</code>内の<code>strl</code>リストの数が<code>MainAVIHeader::dwStreams</code>と異なる場合，致命的なエラーとして報告すべきである．
+</p>
+
+<h4><a name="2.1.3">2.1.3</a> ストリームヘッダ要素: strh</h4>
+<pre>
+<code>typedef struct {
+    FOURCC  fccType;
+    FOURCC  fccHandler;
+    DWORD   dwFlags;
+    WORD    wPriority;
+    WORD    wLanguage;
+    DWORD   dwInitialFrames;
+    DWORD   dwScale;
+    DWORD   dwRate;         /* dwRate / dwScale == samples/second */
+    DWORD   dwStart;
+    DWORD   dwLength;       /* 上記の単位で… */
+    DWORD   dwSuggestedBufferSize;
+    DWORD   dwQuality;
+    DWORD   dwSampleSize;
+    RECT    rcFrame;
+} AVIStreamHeader;
+</code></pre>
+<p>繰り返しになるが，変数名が意味通りとは限らない．</p>
+<dl>
+<dt><code>fccType</code></dt>
+<dd>次のものが使用できる
+<ul>
+ <li><code>'vids'</code> - ビデオ</li>
+ <li><code>'auds'</code> - 音声</li>
+ <li><code>'txts'</code> - 字幕</li>
+</ul>
+</dd>
+<dt><code>fccHandler</code></dt>
+<dd>使用コーデックのFourCC</dd>
+<dt><code>dwFlags</code></dt>
+<dd>以下のフラグが定義されている：
+<ul>
+ <li><code>AVISF_DISABLED</code> - このストリームは初期状態では有効にすべきでない</li>
+ <li><code>AVISF_VIDEO_PALCHANGES</code> - このビデオストリームは再生中にカラーパレットが変化する．</li>
+</ul>
+</dd>
+<dt><code>dwInitialFrames</code></dt>
+<dd>ファイル中に存在するストリームの最初のブロックの数</dd>
+<dt><code>dwRate / dwScale =</code></dt>
+<dd>
+<code>samples / second</code>（音声） または <code>frames / second</code>（ビデオ）．<br>
+<code>dwScale</code>と<code>dwRate</code>は互いに素にすべきである．
+例えば25/1の代わりに10,000,000/400,000を入れた場合，あるハードウェアMPEG4プレイヤでは再生できなくなることがすでに報告されている．
+</dd>
+<dt><code>dwStart</code></dt>
+<dd>
+ストリームの開始時間．
+VBR音声の場合，この値はストリームの始まる前に再生される無音フレームの数を示す．
+</dd>
+<dt><code>dwLength</code></dt>
+<dd><code>dwRate</code>と<code>dwScale</code>で定義される単位でのストリームのサイズ</dd>
+<dt><code>dwSuggestedBufferSize</code></dt>
+<dd>
+このストリームのブロックを保持するために必要なバッファのサイズ．
+0にできることになっているが（この場合はソフトが推測する），ある条件では（例えば，MP3-CBRのOpen-DMLファイル）M$のAVIスプリッタが適切に扱わないため，0にすべきではない．
+</dd>
+<dt><code>dwQuality</code></dt>
+<dd>ストリームの質を示すべきである．重要ではない．</dd>
+<dt><code>dwSampleSize</code></dt>
+<dd>ストリームの最小単位（これ以上細分すべきでない単位）のバイト数</dd>
+</dl>
+
+<h4><a name="2.1.4">2.1.4</a> ストリームヘッダ要素: strf</h4>
+<p>
+<code>strf</code>チャンクの構造体はメディアの種類に依存する．<br>
+ビデオストリームでは<code>BITMAPINFOHEADER</code>構造体，音声ストリームでは<code>WAVEFORMATEX</code>構造体を使う．
+</p>
+
+<h4><a name="2.1.5">2.1.5</a> ストリームヘッダ要素: indx</h4>
+<p>
+このチャンクはストリームの上位インデックスを格納する．
+<a href="#3.2">3.2節</a>を参照．
+</p>
+
+<h4><a name="2.1.6">2.1.6</a> ストリームヘッダ要素: strn</h4>
+<p>
+この要素ではストリームの名称を格納する．
+名称はプレーンASCIIを使うべきであり，特にUTF-8は使うべきではない．
+</p>
+
+<h2><a name="3">3</a> AVIインデックス</h2>
+<h3><a name="3.1">3.1</a> 古い形式のインデックス</h3>
+<p>
+AVI 1.0で見られるインデックスについて説明する．
+このインデックスはRIFF-AVIリストの中の<code>movi</code>リストの後ろに置かれる．
+<code>idx1</code>チャンクのデータ領域は次に示す構造を持つ．
+</p>
+<pre>
+<code>AVIINDEXENTRY  index_entry[n]
+
+typedef struct {
+    DWORD  ckid;
+    DWORD  dwFlags;
+    DWORD  dwChunkOffset;
+    DWORD  dwChunkLength;
+} AVIINDEXENTRY;
+</code></pre>
+<p>これらの値は以下の意味を持つ</p>
+<dl>
+<dt><code>ckid</code></dt>
+<dd>ファイル内のデータチャンクのチャンクIDと対応する4文字コードを示す．</dd>
+<dt><code>dwFlags</code></dt>
+<dd>以下のフラグが定義されている：
+<ul>
+ <li><code>AVIIF_KEYFRAME</code> : 参照するチャンクはキーフレーム．</li>
+ <li><code>AVIIF_LIST</code> : チャンクではなく，リストを参照．</li>
+ <li><code>AVIIF_FIRSTPART</code> : このチャンクは追随するフレームを必要とし，単独では使えない．</li>
+ <li><code>AVIIF_LASTPART</code> : このチャンクは先行するフレームを必要とし，単独では使えない．</li>
+ <li><code>AVIIF_NOTIME</code> : 対応するチャンクの持続時間は0．</li>
+</ul>
+<code>AVIIF_FIRSTPART</code>や<code>AVIIF_LASTPART</code>が指定されていないなら，そのチャンクは単独で使用できる．
+言い換えれば，チャンクは対応するストリームの少なくとも1パケット以上である．
+これはAVIファイルにVBR音声ストリームを格納する時に重要となる（<a href="#5.4">5.4節</a>を参照．）
+</dd>
+<dt><code>dwChunkOffset</code></dt>
+<dd>
+対応するチャンクのヘッダの位置．<br>
+<strong>警告：</strong>この値はファイル内での絶対位置，または<code>'movi'</code>識別子の最初のバイトからの相対位置のどちらでも指定できる．
+AVIファイルパーサはどちらの種類でも扱えなければならない．
+</dd>
+<dt><code>dwChunkLength</code></dt>
+<dd>対応するチャンクのバイト単位でのサイズ．</dd>
+</dl>
+
+<h3><a name="3.2">3.2</a> Open-DMLインデックス</h3>
+<p>Open-DMLインデックスチャンクの基本的な構造体を示す：</p>
+<pre>
+<code>typedef struct _aviindex_chunk {
+    FOURCC fcc;
+    DWORD  cb;
+    WORD   wLongsPerEntry;
+    BYTE   bIndexSubType;
+    BYTE   bIndexType;
+    DWORD  nEntriesInUse;
+    DWORD  dwChunkID;
+    DWORD  dwReserved[3];
+    struct _aviindex_entry {
+      DWORD   adw[wLongsPerEntry];
+    } aIndex [ ];
+} AVIINDEXCHUNK;
+</code></pre>
+<p>
+Open-DMLインデックス構造体のあらゆるサブタイプはこの構造体と互換性を持つ．
+それぞれの要素は次の意味をもつ：
+</p>
+<dl>
+<dt><code>fcc, cb</code></dt>
+<dd>チャンクハンドラ．<code>CHUNK</code>構造体の<code>dwFourCC</code>，<code>dwSize</code>と同じ．</dd>
+<dt><code>wLongsPerEntry</code></dt>
+<dd>
+各<code>aIndex[i]</code>のサイズは<code>4*wLongsPerEntry</code>バイトである．
+（<code>aIndex[i]</code>の内容はインデックスの種類に依存する）
+</dd>
+<dt><code>bIndexType, bIndexSubType</code></dt>
+<dd>インデックスの種類を定義する</dd>
+<dt><code>nEntriesInUse</code></dt>
+<dd><code>aIndex[0] .. aIndex[nEntriesInUse-1]</code>が有効</dd>
+<dt><code>dwChunkId</code></dt>
+<dd>
+インデックスの示すストリームのID，例えば<code>'00dc'</code>．
+このため，一つのインデックスチャンクは同一のストリームのデータしか参照できない．
+</dd>
+</dl>
+
+<h4><a name="3.2.1">3.2.1</a> 上位のインデックス（Super Index）</h4>
+<p>
+上位のインデックス（'super index'）は他のインデックスチャンクを参照する．
+この構造体を以下に示す：
+</p>
+<pre>
+<code>typedef struct _avisuperindex_chunk {
+    FOURCC fcc;
+    DWORD  cd;
+    WORD   wLongsPerEntry;
+    BYTE   bIndexSubType;
+    BYTE   bIndexType;
+    DWORD  nEntriesInUse;
+    DWORD  dwChunkId;
+    DWORD  dwReserved[3];
+    struct _avisuperindex_entry {
+      __int64 qwOffset;
+      DWORD   dwSize;
+      DWORD   dwDuration;
+    } aIndex [ ];
+} AVISUPERINDEX;
+</code></pre>
+<p>次の値が具体的に規定されている：</p>
+<ul>
+<li><code>bIndexType = AVI_INDEX_OF_INDEXES</code></li>
+<li><code>bIndexSubType = [ AVI_INDEX_2FIELD | 0 ]</code></li>
+<li><code>wLongsPerEntry = 4</code></li>
+</ul>
+<p>
+ご覧の通り，<code>aIndex</code>配列の個々の項目は4つの<code>DWORD</code>で構成されている．
+これらの値の意味を次に示す：
+</p>
+<dl>
+<dt><code>qwOffset</code></dt>
+<dd>参照するインデックスチャンクの位置</dd>
+<dt><code>dwSize</code></dt>
+<dd>参照するスタンダードインデックスチャンクまたはフィールドインデックスチャンクのサイズ</dd>
+<dt><code>dwDuration</code></dt>
+<dd>
+AVIストリームヘッダで規定される単位での持続時間．
+ビデオやVBR音声では通常，フレーム数を示す．<br>
+<strong>重要：</strong>
+<em>VirtualDub 1.4.10とそれ以前のバージョンでは音声ストリームにおいて間違った値が書き込まれる．</em>
+従って，AVIパーサはこの値を利用せずにファイルを扱えるようにすべきである．
+</dd>
+</dl>
+
+<h4><a name="3.2.2">3.2.2</a> スタンダードインデックス</h4>
+<p>
+このインデックスタイプではビデオ，音声，または字幕のチャンクを参照する．
+これもまた一般的なOpen-DMLインデックスの派生型であり，次の構造をしている：
+</p>
+<pre>
+<code>typedef struct _avistdindex_chunk {
+    FOURCC  fcc;
+    DWORD   cd;
+    WORD    wLongsPerEntry;
+    BYTE    bIndexSubType;
+    BYTE    bIndexType;
+    DWORD   nEntriesInUse;
+    DWORD   dwChunkId;
+    __int64 qwBaseOffset;
+    DWORD   dwReserved3;
+    struct _avistdindex_entry {
+      DWORD dwOffset;
+      DWORD dwSize;
+    } aIndex [ ];
+} AVISTDINDEX;
+</code></pre>
+<dl>
+<dt><code>wLongsPerEntry</code></dt>
+<dd>
+見れば分かるとおり，個々の<code>aIndex[i]</code>は8バイトなので，<br>
+<code>wLongsPerEntry = 2</code>
+</dd>
+<dt><code>bIndexSubType</code></dt>
+<dd><code>= 0</code></dd>
+<dt><code>bIndexType</code></dt>
+<dd><code>= AVI_INDEX_OF_CHUNKS</code></dd>
+<dt><code>qwBaseOffset</code></dt>
+<dd>この値を<code>AVISTDINDEX</code>のそれぞれの<code>dwOffset</code>に加算する．</dd>
+<dt><code>dwOffset, dwSize</code></dt>
+<dd>
+これらの要素は対応する<code>CHUNK</code>のデータ領域（チャンクヘッダ<strong>ではない</strong>！）の位置（<code>qwBaseOffset + dwOffset</code>）と長さを示す．
+<code>nEntriesInUse</code>の数だけこのペアがあり，それぞれにつき1フレームのビデオ/音声が対応している．
+<code>dwSize</code>の31ビット目はフレームタイプを表す：このビットがセットされているなら，そのフレームはキーフレームではない．
+</dd>
+</dl>
+<h5><a name="lowoverhead">オーバーヘッド節約モード</a></h5>
+<p>
+Open-DMLの仕様では，インデックスの参照する“データ領域”はチャンクヘッダに続く場所であるとは明記されていない．
+すなわち，フレームごとに一つのインデックスエントリが存在する限り，複数のフレームを一つのチャンクに格納することも可能である．
+この方法ならチャンクヘッダを持つのは少数のフレームだけで済み，通常のOpen-DMLファイルより50%までオーバーヘッドを削減できる．
+もちろんメインAVIヘッダでは<code>AVIF_MUSTUSEINDEX</code>フラグをセットして，強制的にパーサにインデックスを使わせる必要がある．
+この方法で作られたファイルを“省オーバーヘッドAVIファイル”と呼ぶ．
+</p>
+<p>
+これは独自形式のAVIファイルではない．
+Open-DMLインデックスとフラグを正しく扱えるなら，どんなパーサでもこのようなファイルと互換するはずである．
+MicrosoftのAVIスプリッタだけでなくVirtualDub(Mod)でも，現状のままで，このようなファイルを問題なく扱える．
+</p>
+
+<h3><a name="3.3">3.3</a> Open-DMLインデックスの使い方</h3>
+<p>
+ここまでの節ではOpen-DMLインデックスがどのようなものかについて説明した．
+この節ではその使い方について扱う．
+</p>
+<p>
+それぞれのストリームはストリームヘッダリスト（<code>'strl'</code>）内に<code>'indx'</code>チャンクを一つ含む．
+このチャンクがSuper Indexチャンクである．
+</p>
+<p>
+個々のスタンダードインデックスは64bitのオフセットとそこからの32bitの相対オフセットを含み，一つのスタンダードインデックスチャンクは4GBセグメントの内側だけを参照できる．
+したがってスタンダードインデックスは4GBファイルサイズ毎にストリームごとに必要である．
+</p>
+<p>
+不幸なことに，Microsoftは仕様書をきちんと読んでいないようだ：
+ファイルに3本以上音声ストリームが含まれている場合，そのような巨大なスタンダードインデックスチャンクを使うファイルをMicrosoftのAVIスプリッタは認識しない．
+なので，小分けにして使う必要がある．
+テストの結果15000エントリ以内であればMicrosoftのAVIスプリッタも適切に処理する．
+</p>
+
+<h2><a name="4">4</a> moviリスト</h2>
+<p>
+<code>movi</code>リストはビデオや音声，字幕，（二次的な）インデックスデータを格納する．
+これらは<code>rec&nbsp;</code>リストでグループ化できる．
+例えば：
+</p>
+<pre>
+<code>LIST movi
+  LIST rec&nbsp;
+    01wb
+    01wb
+    02wb
+    03wb
+    03wb
+    03wb
+    00dc
+    00dc
+  LIST rec&nbsp;
+    01wb
+    02wb
+  LIST rec&nbsp;
+    ...
+    ...
+    ix01
+    ix02
+    ix03
+    ....
+    ....
+</code></pre>
+<p>次のチャンクヘッダIDが定義されている：</p>
+<ul>
+<li><code>..wb</code> : 音声チャンク</li>
+<li><code>..dc</code> : ビデオチャンク</li>
+<li><code>..tx</code> : 字幕チャンク</li>
+<li><code>ix..</code> : スタンダードインデックスブロック</li>
+</ul>
+<p>
+<code>rec&nbsp;</code>リストへのグループ化はMicrosoftのAVIスプリッタでの再生では過度のシークを抑制できるが，いくつかの独立した再生機器では再生できない．
+</p>
+<p>
+ストリームのチャンクの最大サイズは対応する<code>dwSuggestedBufferSize</code>の値より小さくすべきである．
+そうでないといくつかのプレイヤ，特にMicrosoftのAVIスプリッタが機能不全に陥る．
+</p>
+
+<h2><a name="5">5</a> 特別な配慮を必要とする音声形式</h2>
+<h3><a name="5.1">5.1</a> MP3</h3>
+<pre><code>wFormatTag = 0x0055</code></pre>
+<p>
+MP3の音声ストリームはそれ以上分解できないフレームの集合である．
+MP3デコーダはフレームの一部分だけでも扱えるはずだが，それでもAVIのチャンクにはMP3の完全なフレーム単位で格納することを推奨する。
+</p>
+<p>
+<code>strf</code>チャンクは，<code>WAVEFORMATEX</code>構造体を拡張した<code>MPEGLAYER3WAVEFORMAT</code>構造体を格納する：
+</p>
+<pre>
+<code>typedef struct mpeglayer3waveformat_tag {
+    WAVEFORMATEX wfx;
+    WORD         wID;
+    DWORD        fdwFlags;
+    WORD         nBlockSize;
+    WORD         nFramesPerBlock;
+    WORD         nCodecDelay;
+} MPEGLAYER3WAVEFORMAT;
+</code></pre>
+<p>
+<strong>重要：</strong><em>この構造体はMP3（'MPEG Layer 3'）専用であり，MP1やMP2（'MPEG Layer 1/2'）には使用しない．</em>
+</p>
+<p>
+MP3ストリームが可変ビットレートの場合は，DirectShowが適切なシークをできるように手を加えなければならない．
+AVIファイルでのVBR音声ストリームの詳細は<a href="#5.4">5.4節</a>を参照．
+</p>
+<p>
+残念なことに，その方法は次の点において十分な考慮がされていない：
+サンプルレートが32kHz以下でも1152バイトより大きいMP3フレームが作成可能である．
+<a href="#5.4">5.4節</a>を読み理解したなら，MP3では通常用いられるようにnBlockSizeが1152の時，なぜそのようなMP3ストリームが（）再生不能になるかわかるだろう．
+この問題は大きな値を用いることで解決できる．
+しかし，いくつかのソフトはこの値が1152であるときだけ，MP3ストリームをVBRとして読み込む．
+言い換えると，AVIファイルでのMP3のVBRストリームにおいて，小さいサンプルレートと高いビットレートの組み合わせは問題となる．
+</p>
+
+<h3><a name="5.2">5.2</a> AC3</h3>
+<pre><code>wFormatTag = 0x2000</code></pre>
+<p>
+AC3をAVIに格納するのは他の音声形式より問題が多い．
+その理由は多くのデコーダ（ソフトウェア・ハードウェア）が壊れていることにある。
+</p>
+<p>
+AC3のストリームはMP3と同様，独立した，分解できないフレームの集合である．
+AVIファイルのどの音声チャンクも少数の（完全な！）AC3フレームを格納する必要がある．
+そうでないと，いくつかのAC3デコーダはチャンクの持続時間の計算を間違える．
+音声ストリームはDirectShowにおいて再生のマスターストリームとして使われるので，その持続時間計算が狂うとビデオの再生がぎくしゃくすることになる．<br>
+理論上は，チャンクには1つのAC3フレームが妥当だが，そのようなストリームを再生できないハードウェアデコーダもある．
+一つのチャンクに6以上のAC3フレームを格納した場合，再生速度が早くなってしまう．
+<strong>したがって，ひとつのAVIチャンクには2から5のAC3フレームを格納することを推奨する．</strong>
+</p>
+
+<h3><a name="5.3">5.3</a> DTS</h3>
+<pre><code>wFormatTag = 0x2001</code></pre>
+<p>
+一つのAVIチャンクに2から20のDTSフレームを入れることで正常に機能するように思われる．
+私自身それ以上の数で試したことがないので分からないが，もしDTSのハードウェアデコーダを所持しているなら，是非いくつまで可能かテストして報告してほしい．
+DTSフレームはAC3と同様，分離することはできない．
+</p>
+
+<h3><a name="5.4">5.4</a> VBR音声（概要）</h3>
+<p>
+事実上全てのAVIファイルは可変ビットレートでフレーム持続時間一定（例えば40ms）のビデオストリームを含み，同様に，フレーム持続時間が一定ならば音声ストリームも可変ビットレートにすることができる．
+つまり，VorbisオーディオをAVIファイルに格納することは，これから説明する方法ではどうやっても<strong>うまくいかない</strong>ことを意味している．
+</p>
+<p>
+DirectShowにビデオストリームと同様にシークさせるためには，ストリームヘッダいくつかの値をビデオストリームと同じように設定する必要がある．
+すなわち：
+</p>
+<ul>
+<li><code>dwRate</code>はサンプルレートを格納する</li>
+<li><code>dwScale</code>は音声の1フレームあたりのサンプル数を格納する</li>
+<li><code>WAVEFORMATEX::nBlockAlign</code>にはストリーム中で最大のフレームのサイズ（バイト単位）以上の値を入れなければならない．</li>
+<li><code>dwSampleSize</code> = 0</li>
+<li>
+それぞれのチャンクにはストリームの完全なパケットを格納する．
+従って，<code>AVIIF_LASTPART</code>や<code>AVIIF_FIRSTPART</code>はどのチャンクにも指定しない．
+こうすることで，DirectShowは各チャンクがストリームヘッダで示された持続時間のパケットを含んでいると認識する．
+</li>
+</ul>
+<p>
+こうして，それぞれのチャンクの持続時間が<br>
+<code>[roundup(chunk size / nBlockAlign)] * dwScale / dwRate</code><br>
+であるとM$のAVIスプリッタに信じ込ませることが出来る．
+</p>
+<p>
+もちろん，オーバーヘッドを削減するためにチャンクを構成する単位は1フレームより大きくても良い（第3章で説明した“<a href="#lowoverhead">オーバーヘッド節約モード</a>”とは無関係）．<br>
+しかしながら，ストリームがVBRの場合，それぞれのチャンク（“普通の”ファイルの場合）またはインデックスの示す位置の音声データ（“省オーバーヘッドAVI”の場合）
+は同じ数のサンプルを含むことが要求される．
+また<code>dwScale</code>にはそれに応じた値を入れる必要がある．
+</p>
+
+<h3><a name="5.5">5.5</a> MPx VBR</h3>
+<ul>
+<li>MPEG1 Layer 3 : 1フレームあたり1152サンプル</li>
+<li>MPEG2 Layer 3 : 1フレームあたり576サンプル</li>
+<li>MPEG1/2 Layer 2 : 非常に残念なことに，Windowsのシステムに含まれるデフォルトのMPEG Layer2デコーダはVBRヘッダが使われていると認識できない．</li>
+</ul>
+
+<h3><a name="5.6">5.6</a> AAC</h3>
+<p>
+AACでは，1つの生AACフレームは普通1024以上のサンプルに及ぶ．
+しかしながら，ソースのコンテナによっては（例えばADTS），ソースファイルから等しい持続時間のパケットを取り出すことは理論上できない．
+この場合は，AVIにはAACストリームを多重化しないか，代わりに致命的エラーを表示することを強く推奨する．
+</p>
+<p>
+AACやHE-AACには<code>WAVEFORMATEX</code>構造体に該当するプライベートデータが要求される．
+詳しくはAVI-Mux GUIのソースコード（FillASI.cpp）を参照せよ．
+</p>
+
+<h3><a name="5.7">5.7</a> VFR音声（AVIでのVorbisの格納）</h3>
+<p>
+一般的には，AVIファイル形式は可変フレームレートのストリームをサポートしていない．
+しかしながら，通常のVBRストリームと同様に扱えるように，一定の持続時間を持つAVIチャンクを作れるならば，そのようなストリームををAVIファイルに格納することが出来る．
+これには基本的に2つの方法が存在する：
+</p>
+<ul>
+<li>
+持続時間の一定な大きな“マクロフレーム”を作り，一つのチャンクにマクロフレームを一つ入れる．
+この方法ではデコーダがフレームに依存しないシーケンスをデコードでき，一度に送信されるのが1フレームであることを要求しないデコーダである必要がある．
+現在入手可能なVorbisデコーダにはこの条件を満たすものは無い．
+</li>
+<li>
+1チャンクの持続時間をとても小さい値に設定し，いくつかの空フレームを長いチャンクの後に加える．
+しかし，この方法ではオーバーヘッドが多くなる．
+</li>
+</ul>
+<p>
+FFMPEGは後者の方法を使っている．
+しかしながら，ffmpegはオーバーヘッドをさらに増大させている．
+パディングチャンクを物理的には一つだけ格納し，パディングを要求する時はインデックスエントリを追加し，AVIF_MUSTUSEINDEXフラグを設定するという方法ではなく，それぞれのパディングチャンクにフレームヘッダをつけるので，毎回8バイトづつ浪費している．
+そのようなストリームでは，<code>wFormatTag = 0x566F</code> のIDが使われている．
+Vorbisの初期化パケット（OGG/Vorbisファイルの最初の3パケット）は<code>strf</code>チャンクのプライベートデータとして保持されている．
+それぞれのvorbis初期化パケットは次の方法で保持されている：
+</p>
+<pre>
+big_endian_int16 size;
+char             data[size];
+</pre>
+
+<h2><a name="6">6</a> AVIでの字幕</h2>
+<p>
+この章では，字幕の読み込みと選択にVSFilterを利用できるような，AVIファイルへ字幕を格納する方法を説明する．
+</p>
+<h3></h3>
+<h4></h4>
+<p>
+1本の字幕ストリームは一つのチャンクに格納する．
+そのチャンクにはヘッダデータに続いて，STRやSSAファイル全体が格納される．
+そのファイルがUTF-8で符号化されている場合，BOMも含ませるべきである．
+ヘッダデータは次のように定義される：
+</p>
+<pre>
+<code>char[4];    // 'GAB2'
+BYTE  0x00;
+WORD  0x02;              // ユニコード
+DWORD dwSize_name;       // ストリーム名の長さ（バイト単位）
+char  name[dwSize_name]; // 字幕ストリーム名（UTF-16，ゼロ終端）
+WORD  0x04;
+DWORD dwSize;        // SRT/SSAテキストファイルのサイズ
+char  data[dwSize];  // SRT/SSAファイル全体
+</code></pre>
+
+<h4></h4>
+<h5>ストリームヘッダチャンク</h5>
+<pre>
+<code>typedef struct {
+    FOURCC fccType;    // "txts"
+    FOURCC fccHandler; // 00 00 00 00
+    DWORD  dwFlags;
+    WORD   wPriority;
+    WORD   wLanguage;
+    DWORD  dwInitialFrames;
+    DWORD  dwScale;
+    DWORD  dwRate;    // dwRate / dwScale == 持続時間（秒単位）
+    DWORD  dwStart;
+    DWORD  dwLength;  // 上記の単位で．1にすべき
+    DWORD  dwSuggestedBufferSize;
+    DWORD  dwQuality;
+    DWORD  dwSampleSize; // = 0 → VBRとして扱われる
+    RECT   rcFrame;      // 0, 0, 0, 0
+} AVIStreamHeader;
+</code></pre>
+
+<h5>ストリームフォーマットチャンク</h5>
+<p>このチャンクのサイズは0</p>
+
+<h5>ストリーム名チャンク</h5>
+<p>
+<code>strn</code>チャンクは<em>VSFilter</em>には無視される．
+従ってここは読み書きする必要はない．
+</p>
+
+<h2><a name="7">7</a> AVIファイル内の不要データ</h2>
+<p>
+AVIファイルで遅延を設定する方法の一つは<code>AVIStreamHeader::dwStart</code>の値を使うことである（<a href="#2.1.3">2.1.3項</a>を参照）．
+しかしながら，全てのプレイヤがこの値を認識するわけではなく，そのようなファイルは正確に再生されない場合がある．
+<em>VirtualDub</em>やその派生物（<em>NanDub</em>，<em>VirtualDubMod</em>）は遅延させるためにストリームの冒頭にデータを付け加える．
+</p>
+<p>
+不幸なことに，これらのソフトはデータ形式を意識しておらず，0でただ埋めるだけである．
+この章ではこれらの0を‘不要データ’として扱う．
+そして，不要データ領域の持続時間の決定を含む，このようなファイルを読み込む方法について説明する．
+</p>
+<p>
+もちろん正しいデータの開始点を，例えばMP3やAC3，DTSではフレームヘッダを見つける必要がある．
+簡単に識別できるフレームヘッダが無いAACのような形式では，冒頭に0が加えられると壊れたストリームになってしまうだろう．
+</p>
+
+<h3><a name="7.1">7.1</a> 固定ビットレート</h3>
+<p>
+ストリームのビットレートが一定の場合，不要データ領域の持続時間は単純に <code>garbage_length * data_rate</code> である．
+</p>
+
+<h3><a name="7.2">7.2</a> 可変ビットレート</h3>
+<p>
+この場合，持続時間はチャンクを考慮して計算しなければならない：
+</p>
+<p>
+<a href="#5.4">5.4節</a>で説明したように，1チャンクの持続時間は次のように計算できる．
+</p>
+<pre><code>roundup(size_of_chunk / strf::nBlockAlign) * duration_per_frame</code></pre>
+<p>
+このため，正しいデータの開始が第<code>n</code>チャンクの<code>m</code>バイト目から始まっている場合，不要データの持続時間は以下のようになる．
+</p>
+<pre>
+<code>sum[i=0..n-1](duration(chunk[i])) + roundup(m/nBlockAlign)
+</code></pre>
+
+<h2><a name="8">8</a> AVIのオーバーヘッド</h2>
+<p>
+この章では多重化する前にAVIファイルのオーバーヘッドを予測する方法を説明する．
+覚書：省オーバーヘッドAVIファイルについては，この章の説明は適用できない．
+基本的に，省オーバーヘッドAVIではビデオ/音声1フレームあたり8から9バイトのオーバーヘッドを生じる．
+</p>
+
+<h3><a name="8.1">8.1</a> 概要</h3>
+<p>
+AVIファイルのオーバーヘッドはファイル中のチャンクの数に依存する．
+その他の構造はオーバーヘッド全体にはそれほど影響しない．
+各チャンクは次に示す量のオーバーヘッドを生じる：
+</p>
+<ul>
+<li>8バイトのチャンクヘッダ（全てのAVI形式）</li>
+<li>16バイトの古典的インデックスのエントリ（<a href="#3.1">3.1節</a>を参照）（AVI 1.0とハイブリッドファイルのRIFF-AVIリスト）</li>
+<li>8バイトのスタンダードインデックスのエントリ（<a href="#3.2.2">3.2.2項</a>を参照）（Open-DML）</li>
+</ul>
+<p>
+すなわち，各チャンクは16，24または32バイトのオーバーヘッドを生じる．
+</p>
+
+<h3><a name="8.2">8.2</a> チャンク数の取得</h3>
+<h4><a name="8.2.1">8.2.1</a> ビデオ</h4>
+<p>
+ビデオストリームでは比較的易しい：それぞれのビデオフレームが一つのチャンクになる．
+</p>
+
+<h4><a name="8.2.2">8.2.2</a> 音声</h4>
+<p>
+音声ストリームのチャンク数はその形式と格納方法に依存する．
+特定の形式では，特別な格納方法が必要もしくは標準とみなされ（<a href="#5">5章</a>を参照），オーバーヘッドはその設定から簡単に計算できる．
+その他の形式では，多重化設定のより詳細な情報が必要になる．
+</p>
+
+<h4><a name="8.2.3">8.2.3</a> 例題</h4>
+<p>
+ビデオ：3時間，25fps（= 3,600,00 / 40ms = 90,000 フレーム毎時）<br>
+音声：2x MP3-VBR（チャンクあたり 1フレーム，フレームあたり 24ms）<br>
+音声：2x AC3（チャンクあたり 4フレーム，フレームあたり 32ms）
+</p>
+<p>
+→ビデオ：270,000チャンク<br>
+→音声：2*150,000 + 2*3*28,125 = 468750チャンク<br>
+→合計：738,750チャンク
+</p>
+
+<hr>
+<p>
+出典：<a href="http://www.alexander-noe.com/video/documentation/avi.pdf">AVI File Format</a> (Alexander Noé, 2005-2006)
+</p>
+<address>
+MakKi &lt;makki_d210@yahoo.co.jp&gt;
+</address>
+</body>
+</html>

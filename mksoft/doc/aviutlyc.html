@@ -1,0 +1,374 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>AviUtlの内部形式について</title>
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rev="made" href="mailto:makki_d210@yahoo.co.jp">
+<style type="text/css">
+<!--
+a.fn {
+  font-size: smaller;
+  vertical-align: super;
+}
+dl.fn {
+  font-size: smaller;
+  margin-left: 1em;
+}
+dl.fn dt{
+ width: 3em;
+ float: left;
+}
+pre {
+ margin-left: 1em;
+}
+-->
+</style>
+</head>
+<body>
+<h1>AviUtlの内部形式について</h1>
+
+<dl>
+<dt>著者</dt><dd>MakKi</dd>
+<dt>初版公開</dt><dd>2009年1月24日</dd>
+</dl>
+
+<h2><a name="contents">目次</a></h2>
+<ul>
+<li>1. <a href="#1">この文書について</a></li>
+<li>2. <a href="#2">aviutlの内部形式の基礎</a>
+ <ul>
+ <li>2.1. <a href="#2.1"><code>PIXEL_YC</code>構造体の定義</a></li>
+ <li>2.2. <a href="#2.2">特徴</a></li>
+ </ul>
+</li>
+<li>3. <a href="#3">YUY2, 24bit-RGBとの相互変換</a>
+ <ul>
+ <li>3.1. <a href="#3.1">YUY2,YC48の相互変換</a></li>
+ <li>3.2. <a href="#3.2">RGB,YC48の相互変換</a></li>
+ </ul>
+</li>
+<li>4. <a href="#4">AviUtl内部での処理の流れ</a>
+ <ul>
+ <li>4.1. <a href="#4.1">入力</a></li>
+ <li>4.2. <a href="#4.2">出力</a></li>
+ <li>4.3. <a href="#4.3">編集画面の表示</a></li>
+ <li>4.4. <a href="#4.4">クリップボード</a></li>
+ </ul>
+</li>
+<li><a href="#ack">謝辞</a></li>
+<li><a href="#ref">参考文献</a></li>
+</ul>
+
+<h2><a name="1">1.</a> この文書について</h2>
+<p>
+この文書はAviUtl内部で使われている画像表現形式について解説するものです。
+ただし、著者はAviUtlの一ユーザにすぎず、公開されている情報と実際の外部動作を元にした想像で書いています。
+そのため実際のAviUtl内部の動作とは異なる可能性が多分にあることに留意してください。
+執筆時点のAviUtlの最新版は0.99g3<a class="fn" href="#fn0">※0</a>で、特記しない場合このバージョンとして構いません。
+また、0.99以降で採用されたYUY2フィルタモードについては触れません。
+</p>
+<p>
+この文書がAviUtl利用者、特にプラグイン開発者の助けになれば幸いです。
+内容の間違いや誤植は<a href="mailto:makki_d210@yahoo.co.jp">MakKi</a>まで連絡ください。
+</p>
+
+<dl class="fn">
+<dt><a name="fn0">※0</a></dt>
+<dd>
+本文書の公開直前に0.99g4が公開されましたが、色変換式が一致することは確認しました。
+更新履歴から考えて他も変わっていないと思われます。
+</dd>
+</dl>
+
+<h2><a name="2">2.</a> AviUtlの内部形式の基礎</h2>
+<p>
+AviUtl内部での画像表現は、<code>PIXEL_YC</code>構造体の配列として保持されています。
+この形式はかなり以前<a class="fn" href="#fn1">※1</a>から採用されていたもので、
+AviUtlの大きな特徴の一つとなっています。
+また、入出力では'YC48'というFourCCが使われています<a class="fn" href="#fn2">※2</a>。
+</p>
+
+<h3><a name="2.1">2.1.</a> <code>PIXEL_YC</code>構造体の定義</h3>
+<p>AviUtlプラグインSDK filter.hより引用</p>
+<blockquote cite="http://spring-fragrance.mints.ne.jp/aviutl/aviutl_plugin_sdk.zip">
+<pre><code>//  YC構造体
+typedef struct {
+    short   y;          //  画素(輝度    )データ (     0 ～ 4096 )
+    short   cb;         //  画素(色差(青))データ ( -2048 ～ 2048 )
+    short   cr;         //  画素(色差(赤))データ ( -2048 ～ 2048 )
+                        //  画素データは範囲外に出ていることがあります
+                        //  また範囲内に収めなくてもかまいません
+} PIXEL_YC;
+</code></pre>
+</blockquote>
+
+<h3><a name="2.2">2.2.</a> 特徴</h3>
+<p>
+YUVを拡張したような形式で、Yを0-4096,UVを-2048-2048として各16bitで表しています。
+具体的には、完全な白（RGB=FFFFFF）は y=4096,cb=0,cr=0、完全な黒（RGB=000000）は y=0,cb=0,cr=0 と表されます。
+これは広く一般に用いられている各要素8bitの形式に比べて、約16倍の精度を持っていることになります。
+これによりフィルタリングによる丸め込み誤差が小さく抑えられており、
+AviUtlが高精度と言われる大きな理由となっています。
+</p>
+<p>
+AviUtl内部形式の各要素は12bitの4096階調であるとよく誤解されていますが、
+見ての通り実は各4097階調であり、12bitでは1足りません。
+他の形式に変換する際はこの点に注意を払う必要があります。
+</p>
+<p>
+注釈にもある通り、0未満や4097以上の輝度の他、-2049以下や2049以上の色差も認められているため、
+YUVのデータ範囲外の値に相当する値も保持することが可能です。
+したがって、フィルタプラグインはこのような範囲外の値も正しく扱えなければなりません。
+ただし、Yを0-4096の範囲に丸め込むといった対処方法は、
+YUVのダイナミックレンジを潰してしまうことになるため好ましくありません。
+時々極端な範囲外の値を持つ画素を渡すと誤動作するプラグインを見ます。
+特に名をあげることはしませんが、修正されることを願います。
+</p>
+
+<dl class="fn">
+<dt><a name="fn1">※1</a></dt>
+<dd>0.96d以前と思われるfilter.hですでに定義されているのが、
+<a href="http://www.marumo.ne.jp/">茂木氏</a>の古いプラグインに同梱されているソース等で確認できます。</dd>
+<dt><a name="fn2">※2</a></dt>
+<dd>0.99d以降のプラグインSDKに記述されています。</dd>
+</dl>
+
+<h2><a name="3">3.</a> YUY2, 24bit-RGBとの相互変換</h2>
+<p>
+現在のAviUtl内部での変換式は、0.98でYUY2入出力対応とともに確立されたもので、
+RGBとの変換式はそれ以前に何度か変更されています<a class="fn" href="#fn3">※3</a>。
+この項目では最新バージョンを含む0.98以降での変換と同等な計算式を示します。
+（整数演算のみで表しました。）
+</p>
+
+<h3><a name="3.1">3.1.</a> YUY2,YC48の相互変換</h3>
+<p>
+YUY2は各要素8bitの256階調ですが、一般的にはYを16-235の220階調、UVを16-240の225階調として扱います。
+したがって、YUY2の各要素をそのまま16倍しただけでは、YC48の0-4096を有効範囲としたスケールには合致しません。
+これがAviSynthの<a href="http://www.geocities.co.jp/SiliconValley-PaloAlto/2382/">warpsharpパッケージ</a>
+のConvertYUY2ToAviUtlYCの抱えていた問題です<a class="fn" href="#fn4">※4</a>。
+正確を期すには、次の式を使う必要があります。
+(AviUtl内部の変換と全く同じ結果が得られます。またシフト演算子は算術シフトです。)
+</p>
+<pre><code>// YUY2-&gt;YC48
+y  = ((Y * 1197)&gt;&gt;6) - 299;
+cb = ((U - 128)*4681 + 164) &gt;&gt; 8;
+cr = ((V - 128)*4681 + 164) &gt;&gt; 8;
+</code></pre>
+<p>
+YUY2では横に並ぶ2画素づつ色差を共有しており、AviUtlでは、
+左側の画素（左端を0とした時の偶数ピクセル）にその色差の値をそのまま格納、
+右側の画素（同、奇数ピクセル）は両側のピクセルの値の中間値にするという補間処理しています。
+左端から <code>k</code> ピクセルめの色差を <code>C[k]</code> として、この補完処理を式で表すと次のようになります。
+</p>
+<pre><code>C[2n+1] = ( C[2n] + C[2n+2] ) &gt;&gt; 1;
+</code></pre>
+<p>
+AviUtlでは2で割るところを1bitの算術シフトで計算しているようです(-∞方向への丸め込み)。
+最右端の奇数画素の色差はその左の画素と等しくなります。
+ちなみに、AviUtl 0.99 で見られた色差処理のバグ<a class="fn" href="#fn5">※5</a>は、
+この補完処理の間違いが原因でした。
+</p>
+<pre><code>// YC48-&gt;YUY2
+Y = ((y*219 + 383)&gt;&gt;12) + 16;
+U = (((cb + 2048)*7 + 66)&gt;&gt;7) + 16;
+V = (((cr + 2048)*7 + 66)&gt;&gt;7) + 16;
+</code></pre>
+<p>
+逆変換では、色差はleft-originとして左の画素のみを使用し、右の画素の値は捨てられます。
+YUY2→YC48で補間しているため、こちらでは補完処理はしていません。
+こちらでも左右の色をマージしてしまうと、結果的にさらに隣のピクセルの色が混ざることになり可逆にならないからです。
+</p>
+<p>
+式からも明らかなように、Yの16-235が0-4096,UVの16-240が-2048-2048に対応する、
+いわゆる伸張圧縮変換を行っています<a class="fn" href="#fn6">※6</a>。
+また、Yの0-15,236-255およびUVの0-15,241-255に相当する値も範囲外の値としてYC48に保持されており、
+YUVのダイナミックレンジは損なわれません。
+YUY2とYC48だけの変換であれば可逆であることもわかります。
+</p>
+
+<h3><a name="3.2">3.2.</a> RGB,YC48の相互変換</h3>
+<p>
+24bit RGBとYC48の相互変換はAviUtlがフィルタプラグインに提供する <code>EXFUNC</code> の
+<code>rgb2yc()</code>, <code>yc2rgb()</code> で行えます。
+この関数と同等の変換式は次のようになります。
+</p>
+<pre><code>// YC48-&gt;RGB
+R = ( 255*y + ( ((22881*cr&gt;&gt;16)+3) &lt;&lt;10) ) &gt;&gt;12;
+G = ( 255*y + ( ((-5616*cb&gt;&gt;16)+(-11655*cr&gt;&gt;16)+3) &lt;&lt;10) ) &gt;&gt;12;
+B = ( 255*y + ( ((28919*cb&gt;&gt;16)+3) &lt;&lt;10) ) &gt;&gt;12;
+
+// RGB-&gt;YC48
+y  = (( 4918*R+354)&gt;&gt;10) + (( 9655*G+585)&gt;&gt;10) + (( 1875*B+523)&gt;&gt;10);
+cb = ((-2775*R+240)&gt;&gt;10) + ((-5449*G+515)&gt;&gt;10) + (( 8224*B+256)&gt;&gt;10);
+cr = (( 8224*R+256)&gt;&gt;10) + ((-6887*G+110)&gt;&gt;10) + ((-1337*B+646)&gt;&gt;10);
+</code></pre>
+<p>
+これら式は、<a href="http://www.marumo.ne.jp/bt601/">ITU-R BT.601</a>
+のアナログRGB-YCbCr変換の式を、各要素0-255を有効範囲とした24bit-RGBとYC48のスケールに合わせたものと思われます。
+このため、BT.709のようなカラーマトリクスの異なる形式で記録されたソースを用いる場合には注意が必要です。
+また、RGBとYC48だけの相互変換ならば完全に可逆であり、劣化しません。
+もちろん間にYC48→YUY2変換を挟むと、RGB→YUY2変換と同様の劣化が起こります。
+</p>
+
+<p>
+上記のように、AviUtlではRGB各要素の0-255、YUY2の16-235/16-240をYC48の有効範囲に割り当てています。
+AviUtlを通してRGBとYUY2の相互変換をする場合、一度内部形式を経由しますが、
+結果としては伸張圧縮変換されることになります。
+</p>
+
+<dl class="fn">
+<dt><a name="fn3">※3</a></dt>
+<dd>確認した限りでは、0.96h, 0.97, 0.97a, 0.97c, 0.98で変更されていました（バグ修正含む）。</dd>
+<dt><a name="fn4">※4</a></dt>
+<dd>現在ではseraphy氏による<a href="http://seraphy.fam.cx/~seraphy/program/WarpSharp/index.html">改良版warpsharp.dll</a>や、
+拙作の<a href="http://mksoft.hp.infoseek.co.jp/avisynth.html#aviutlyc">ConvertAviUtlYCFix</a>で解決されています。</dd>
+<dt><a name="fn5">※5</a></dt>
+<dd>このバグは 0.99a ですでに修正されています。</dd>
+<dt><a name="fn6">※6</a></dt>
+<dd>とはいえ、この変換は単なるスケールの置き換えなので、実際に伸張圧縮されていると言えるかどうかは難しい所です。</dd>
+</dl>
+
+<h2><a name="4">4.</a> AviUtlでの処理の流れ</h2>
+<p>
+AviUtlが直接扱えるのは、RGB,YUY2,YC48 の3つの形式ですが、
+ユーザが実際に映像として目にするのはRGBかYUY2のどちらかになるでしょう。
+特にこの2つの形式では色の表現できる範囲と階調が異なるため、どちらで入出力されているかを知らないと、
+画面表示と出力結果で色合いが異なる、出力するとソースや編集中は見られなかったバンディングが現れる、
+といった現象に悩まされることになります。
+この項目では、AviUtlでの処理の流れを簡単に解説します。
+</p>
+
+<h3><a name="4.1">4.1.</a> 入力</h3>
+<p>
+AviUtlへの入力は、内臓されたAVI/BMP読み込み機能のほか、入力プラグインとVFAPIが利用できます。
+VFAPIからの入力はRGBに限定されていますが、内臓機能と入力プラグインでは RGB,YUY2,YC48 と、
+インストールされた VCM<a class="fn" href="#fn7">※7</a> のコーデックの各種形式が扱えます。
+それぞれの入力形式から内部形式への変換までを順に説明します。
+</p>
+
+<h4>RGBでの入力</h4>
+<p>
+RGBでデータを受け取ったAviUtlは、<a href="#3.2">3.2節</a>のようにYC48への変換を行い、内部形式とします。
+</p>
+<h4>YUY2での入力</h4>
+<p>
+AviUtlへデータがYUY2で渡されると、<a href="#3.1">3.1節</a>で示したようにYC48へ変換され、内部形式として利用されます。
+</p>
+<h4>YC48での入力</h4>
+<p>
+入力プラグイン等がYC48でAviUtlにデータを渡す場合、そのままコピーされて内部形式として利用されます。
+</p>
+<h4>その他の形式での入力</h4>
+<p>
+上記以外の形式でデータが渡される場合、AviUtlは VCMを利用してRGBもしくはYUY2へのデコードを試みます。
+デコード可能なコーデックが見つからない場合は、ファイルの読み込みに失敗します。
+どちらの形式へデコードするかは「ファイル→環境設定→コーデックの設定」の「YUY2で展開する」チェックボックスで設定できます。
+</p>
+<dl>
+<dt>YUY2で展開する かつ コーデックがYUY2でデコード可能な時</dt>
+<dd>入力プラグイン等から受け取ったデータは VCM に渡され、YUY2にデコードされた画像をAviUtlがYC48へ変換します。</dd>
+<dt>YUY2で展開しない かつ コーデックがRGBでデコード可能な時</dt>
+<dd>データはVCMによってRGBにデコードされ、その画像をAviUtlがYC48へ変換します。</dd>
+<dt>指定された形式にデコードできない時</dt>
+<dd>もう一方の形式へのデコードを試みます。デコード後は同様です。</dd>
+</dl>
+<p>
+ RGBとYUY2のどちらでデコードされているかは、「表示→ファイルの情報」の「ビデオ展開形式」で確認できます。
+</p>
+
+<h3><a name="4.2">4.2.</a> 出力</h3>
+<p>
+AviUtlから映像を出力する方法は、AVI出力、出力プラグイン、VFAPIの3つです。
+</p>
+<h4>AVI出力</h4>
+<p>
+標準機能のAVI出力では、ダイアログの「ビデオ圧縮」ボタンを押すことで、出力形式を指定できます。
+ここで「未圧縮」を指定すると24bit-RGBへ、「YUY2」を指定するとYUY2形式へとYC48から変換されてAVIファイルに書き込まれます。
+他にもインストールされているコーデックも指定できますが、コーデックに渡される形式は入力と同様、
+「ファイル→環境設定→コーデックの設定」の「YUY2で圧縮する」チェックボックスで指定できます。
+</p>
+<dl>
+<dt>YUY2で圧縮する</dt>
+<dd>YC48からYUY2へ変換され、VCMへと渡されます。圧縮されたデータを受け取り、ファイルへと書き込みます。</dd>
+<dt>YUY2で圧縮しない</dt>
+<dd>YC48から24bit-RGBへと変換され、VCMにより圧縮します。そして受け取ったデータをファイルへ書き込みます。</dd>
+</dl>
+<p>
+YUY2を受け付けないコーデックでは、「YUY2で圧縮する」チェックボックスがあらかじめ無効にされており、
+常に24bit-RGBで受け渡しを行います。
+</p>
+<h4>出力プラグイン</h4>
+<p>
+出力プラグインからAviUtl本体に画像を要求する際、RGB、YUY2、YC48のいずれかの形式を指定することができます。
+AviUtlは出力プラグインの要求に従ってYC48をそのまま、もしくはRGB、YUY2へ変換し、プラグインへ渡します。
+</p>
+<h4>VFAPI</h4>
+<p>
+VFAPIによる出力は仕様で24bit-RGBに限定されています。aviutl.vfpはYC48からRGBへ変換し、呼び出し元に画像を渡します。
+</p>
+
+<h3><a name="4.3">4.3.</a> 編集画面の表示</h3>
+<p>
+編集画面への表示方法は、「表示→オーバーレイ表示」のチェックの有無で決まります。
+</p>
+<dl>
+<dt>オーバーレイ表示 しない</dt>
+<dd>
+YC48から24bit-RGBへと変換し<a class="fn" href="#fn8">※8</a>、
+Windows GDI (Graphics Device Interface) によって描画します。
+</dd>
+<dt>オーバーレイ表示 する</dt>
+<dd>
+YUY2オーバーレイが可能な場合<a class="fn" href="#fn9">※9</a>、
+YC48からYUY2へ変換したデータをバッファへ書き込みます。
+YUVのスケールの扱いがAviUtlと異なるビデオカード<a class="fn" href="#fn10">※10</a>の場合、
+GDIによる表示とは異なる色合いで表示されるでしょう。
+</dd>
+</dl>
+
+<h3><a name="4.4">4.4.</a> クリップボード</h3>
+<p>
+クリップボードを利用したコピー&amp;ペーストは DIB (Device Independent Bitmap) 形式で行われており、
+必然的にRGBでの受け渡しになります。
+クリップボードへのコピーでは、まずYC48からRGBへと変換し、そのビットマップをクリップボードへと渡します。
+ペーストにおいて受け取ったRGBのビットマップは、そのまま内部に保持され、YC48へ変換して利用されます。
+プロジェクト保存をする際には、元のRGBのビットマップがaupファイルへ書き出されます。
+</p>
+
+
+<dl class="fn">
+<dt><a name="fn7">※7</a></dt>
+<dd>Video Compression Manager。 VFW (Video for Windows) の一部で、映像の圧縮/展開を行うためのインターフェイス。</dd>
+<dt><a name="fn8">※8</a></dt>
+<dd>GDIの仕様で、RGBでの受け渡しとなっています。</dd>
+<dt><a name="fn9">※9</a></dt>
+<dd>不可能な場合にAviUtlがどう振る舞うかは調べていません。</dd>
+<dt><a name="fn10">※10</a></dt>
+<dd>数年前までのGeForceシリーズ等。</dd>
+</dl>
+
+
+<h2><a name="ack">謝辞</a></h2>
+<p>
+AviUtlという素晴らしいソフトを開発、公開してくださったKENくん様、
+並びに様々なプラグインを開発、時にはソースまで公開してくださったプラグイン開発者の皆様、
+そしてこの文書を読んでいるあなたに多大な感謝を捧げます。
+</p>
+
+<h2><a name="ref">参考文献</a></h2>
+<ol>
+<li><a href="http://spring-fragrance.mints.ne.jp/aviutl/">AviUtlのお部屋 「AviUtl」「AviUtlプラグインSDK」</a></li>
+<li><a href="http://www.marumo.ne.jp/bt601/">まるも製作所 「ITU-R BT.601について」</a></li>
+<li><a href="http://www.geocities.jp/mosd7500/etc/mingw.html">ごみ置き場 「MinGWでAviUtlプラグイン作成」</a></li>
+<li><a href="http://www.tenchi.ne.jp/~yoko/aviutl/index.php?%A5%A2%A5%CB%A5%E1%A1%BC%A5%B7%A5%E7%A5%F3%CA%D4%BD%B8%20for%20AviUtl">AviUtl実験室 「アニメーション編集 for AviUtl」</a></li>
+<li><a href="http://seraphy.fam.cx/~seraphy/program/WarpSharp/index.html">seraphyのプログラム公開所 「WarpSharpプラグイン」</a></li>
+<li><a href="http://www.yks.ne.jp/~hori/VFAPI.html">堀ほぅむぺぇじ 「プラグイン開発キット」</a></li>
+<li><a href="http://msdn.microsoft.com/ja-jp/library/default.aspx">MSDN ライブラリ</a></li>
+</ol>
+
+</body>
+</html>
+
