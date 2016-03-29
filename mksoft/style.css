@@ -36,7 +36,7 @@ p.count,p.copyright{
 	font-size: 80%;
 }
 p#summary { margin: 0; }
-p#link { margin: 0;}
+p#link { margin: 0 0 -1em; }
 p.history {
 	margin:0;
 	clear:both;
