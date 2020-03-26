@@ -1,3 +1,8 @@
+---
+layout: default
+---
+
 # It works!
 
- - [mksoft](mksoft/index.html)
+ - [MakKi's SoftWare](mksoft/index.html)
+ - [articles](articles.md)

@@ -1,1 +1,10 @@
-theme: jekyll-theme-cayman
+theme: minima
+plugins:
+ - jekyll-feed
+ - jekyll-seo-tag
+
+social_links:
+ github: "makiuchi-d"
+ twitter: "makki_d"
+
+date_format: "%Y/%m/%d"
