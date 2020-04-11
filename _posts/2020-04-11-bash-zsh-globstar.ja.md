@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "BashとZshの "**" (globstar) の挙動の違い"
+title: "BashとZshの \"**\" (globstar) の挙動の違い"
 ---
 
 ## "**" (globstar) とは
