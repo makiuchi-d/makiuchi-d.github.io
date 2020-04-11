@@ -14,8 +14,8 @@ globの構文として使える、0個以上のディレクトリに再帰的に
 globの構文はPOSIX.2にも定義されていますが、そこには`**`は含まれていないため、処理系によって動作がまちまちになっています。
 この記事では、bashとzshでの挙動の違いを紹介します。
 
-[^1]: https://hkoba.hatenablog.com/entry/2016/02/10/230206
-[^2]: https://srad.jp/story/09/02/24/1538237/
+[^1]: [再帰globパターン **/ の元祖は zsh なのか、調べてみた - hkoba blog](https://hkoba.hatenablog.com/entry/2016/02/10/230206)
+[^2]: [「bash 4.0」リリース、4年7カ月ぶりのメジャー・アップデート - スラド](https://srad.jp/story/09/02/24/1538237/)
 
 ## BashとZshでの挙動の違い
 
