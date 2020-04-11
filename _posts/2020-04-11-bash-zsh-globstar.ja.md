@@ -34,18 +34,18 @@ globの構文はPOSIX.2にも定義されていますが、そこには`**`は�
 
 | pattern  | fileA | subA | subA/fileB | subA/subB | subA/subB/fileC | subA/subB/subC |
 |:---------|:-----:|:----:|:----------:|:---------:|:---------------:|:--------------:|
-| \*       | bash◯<br>zsh◯ | bash◯<br>zsh◯ | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× |
-| \*/      | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× |
-| \*/\*    | bash×<br>zsh× | bash×<br>zsh× | bash◯<br>zsh◯ | bash◯<br>zsh◯ | bash×<br>zsh× | bash×<br>zsh× |
-| \*/\*/   | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash×<br>zsh× |
-| \*\*     | bash◯<br>zsh◯ | bash◯<br>zsh◯ | **<font color="red">bash◯<br>zsh×</font>** | **<font color="red">bash◯<br>zsh×</font>** | **<font color="red">bash◯<br>zsh×</font>** | **<font color="red">bash◯<br>zsh×</font>** |
-| \*\*/    | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash◯<br>zsh◯ |
-| \*\*/\*  | bash◯<br>zsh◯ | bash◯<br>zsh◯ | bash◯<br>zsh◯ | bash◯<br>zsh◯ | bash◯<br>zsh◯ | bash◯<br>zsh◯ |
-| \*\*/\*/ | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash◯<br>zsh◯ |
-| \*/\*\*  | bash×<br>zsh× | **<font color="red">bash◯<br>zsh×</font>** | bash◯<br>zsh◯ | bash◯<br>zsh◯ | **<font color="red">bash◯<br>zsh×</font>** | **<font color="red">bash◯<br>zsh×</font>** |
-| \*/\*\*/ | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash◯<br>zsh◯ |
-| s\*\*    | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× |
-| s\*\*/   | bash×<br>zsh× | bash◯<br>zsh◯ | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× | bash×<br>zsh× |
+| \*       | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× |
+| \*/      | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× |
+| \*/\*    | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× |
+| \*/\*/   | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× |
+| \*\*     | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ | **<font color="red">bash&nbsp;◯<br>zsh&nbsp;×</font>** | **<font color="red">bash&nbsp;◯<br>zsh&nbsp;×</font>** | **<font color="red">bash&nbsp;◯<br>zsh&nbsp;×</font>** | **<font color="red">bash&nbsp;◯<br>zsh&nbsp;×</font>** |
+| \*\*/    | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ |
+| \*\*/\*  | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ |
+| \*\*/\*/ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ |
+| \*/\*\*  | bash&nbsp;×<br>zsh&nbsp;× | **<font color="red">bash&nbsp;◯<br>zsh&nbsp;×</font>** | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;◯<br>zsh&nbsp;◯ | **<font color="red">bash&nbsp;◯<br>zsh&nbsp;×</font>** | **<font color="red">bash&nbsp;◯<br>zsh&nbsp;×</font>** |
+| \*/\*\*/ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ |
+| s\*\*    | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× |
+| s\*\*/   | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;◯<br>zsh&nbsp;◯ | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× | bash&nbsp;×<br>zsh&nbsp;× |
 
 zshでは`**/`の形のときのみ再帰的にディレクトリとマッチしているのに対し、bashでは`**`でも再帰的に、ディレクトリだけでなくファイルにもマッチしています。
 また、どちらの場合もパターン末尾が`/`のときはディレクトリにのみマッチします。
