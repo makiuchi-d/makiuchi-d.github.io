@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "BashとZshの ** (globstar) の挙動の違い"
+title: "BashとZshの "**" (globstar) の挙動の違い"
 ---
 
-## ** (globstar) とは
+## "**" (globstar) とは
 
 globの構文として使える、0個以上のディレクトリに再帰的にマッチするワイルドカードです。
 例えば、`a/**/z`は `a/z`, `a/b/z`, `a/b/c/z`... にマッチします。
@@ -34,18 +34,18 @@ globの構文はPOSIX.2にも定義されていますが、そこには`**`は�
 
 | pattern  | fileA | subA | subA/fileB | subA/subB | subA/subB/fileC | subA/subB/subC |
 |:---------|:-----:|:----:|:----------:|:---------:|:---------------:|:--------------:|
-| \*       | bash ◯ zsh ◯ | bash ◯ zsh ◯ | bash × zsh × | bash × zsh × | bash × zsh × | bash × zsh × |
-| \*/      | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash × zsh × | bash × zsh × | bash × zsh × |
-| \*/\*    | bash × zsh × | bash × zsh × | bash ◯ zsh ◯ | bash ◯ zsh ◯ | bash × zsh × | bash × zsh × |
-| \*/\*/   | bash × zsh × | bash × zsh × | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash × zsh × |
-| \*\*     | bash ◯ zsh ◯ | bash ◯ zsh ◯ | **bash :o: zsh :x:** | **bash :o: zsh :x:** | **bash :o: zsh :x:** | **bash :o: zsh :x:** |
-| \*\*/    | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash ◯ zsh ◯ |
-| \*\*/\*  | bash ◯ zsh ◯ | bash ◯ zsh ◯ | bash ◯ zsh ◯ | bash ◯ zsh ◯ | bash ◯ zsh ◯ | bash ◯ zsh ◯ |
-| \*\*/\*/ | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash ◯ zsh ◯ |
-| \*/\*\*  | bash × zsh × | **bash :o: zsh :x:** | bash ◯ zsh ◯ | bash ◯ zsh ◯ | **bash :o: zsh :x:** | **bash :o: zsh :x:** |
-| \*/\*\*/ | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash ◯ zsh ◯ |
-| s\*\*    | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash × zsh × | bash × zsh × | bash × zsh × |
-| s\*\*/   | bash × zsh × | bash ◯ zsh ◯ | bash × zsh × | bash × zsh × | bash × zsh × | bash × zsh × |
+| \*       | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × |
+| \*/      | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × |
+| \*/\*    | bash ×<br>zsh × | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ×<br>zsh × |
+| \*/\*/   | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ×<br>zsh × |
+| \*\*     | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ | <font color="red">**bash ◯<br>zsh ×**</font> | <font color="red">**bash ◯<br>zsh ×**</font> | <font color="red">**bash ◯<br>zsh ×**</font> | <font color="red">**bash ◯<br>zsh ×**</font> |
+| \*\*/    | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ◯<br>zsh ◯ |
+| \*\*/\*  | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ |
+| \*\*/\*/ | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ◯<br>zsh ◯ |
+| \*/\*\*  | bash ×<br>zsh × | <font color="red">**bash ◯<br>zsh ×**</font> | bash ◯<br>zsh ◯ | bash ◯<br>zsh ◯ | <font color="red">**bash ◯<br>zsh ×**</font> | <font color="red">**bash ◯<br>zsh ×**</font> |
+| \*/\*\*/ | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ◯<br>zsh ◯ |
+| s\*\*    | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × |
+| s\*\*/   | bash ×<br>zsh × | bash ◯<br>zsh ◯ | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × | bash ×<br>zsh × |
 
 zshでは`**/`の形のときのみ再帰的にディレクトリとマッチしているのに対し、bashでは`**`でも再帰的に、ディレクトリだけでなくファイルにもマッチしています。
 また、どちらの場合もパターン末尾が`/`のときはディレクトリにのみマッチします。
