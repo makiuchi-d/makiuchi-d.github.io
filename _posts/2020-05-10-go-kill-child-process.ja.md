@@ -276,7 +276,7 @@ process done: signal: killed
 Goの`os/exec`パッケージはかなり低水準なライブラリなので、利用者側でいろいろハンドリングしてあげる必要があります。
 
 よくよく調べるとrealizeやfreshを含め、goのタスクランナーのほとんどが孤児プロセスを生む問題を抱えたままです。
-拙作のタスクランナー・ホットリロードツール[arelo](https://gihub.com/makiuchi-d/arelo)でも同じようにこの問題にハマり、
+拙作のタスクランナー・ホットリロードツール[arelo](https://github.com/makiuchi-d/arelo)でも同じようにこの問題にハマり、
 ここで紹介したような対策を施しました。
 
 Goで外部コマンドを呼び出すときは気をつけましょう。
