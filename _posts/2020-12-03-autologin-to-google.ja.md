@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "GoogleサービスをPuppeteerで自動操作する方法"
+title: "GoogleのサービスをPuppeteerで自動操作する方法 - ログイン編"
 ---
 
 Webサービスの自動操作には様々な手段がありますが、[Puppeteer](https://pptr.dev/)や[Selenium](https://www.selenium.dev/)といったブラウザ本体を自動操縦できるツールがとても便利です。
