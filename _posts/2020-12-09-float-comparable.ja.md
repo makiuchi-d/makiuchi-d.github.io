@@ -23,6 +23,8 @@ title: "バイト列のまま大小比較可能な浮動小数点数表現を作
 浮動小数点数は多くの環境で[IEEE754](https://ja.wikipedia.org/wiki/IEEE_754)のビット列として表現されています。
 詳しい解説はWikipediaに譲るとして、ここではその大小関係について考えます。
 
+![単精度浮動小数のビット列(出典：Wikipedia)](https://upload.wikimedia.org/wikipedia/commons/d/d2/Float_example.svg)
+
 ### 正の数の大小関係
 
 正の数と負の数に分けて考えます。まずは正の数の場合です。
