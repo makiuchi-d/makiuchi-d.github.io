@@ -97,7 +97,7 @@ func FromComparable(b []byte) float64 {
 (12/9 14時ころ修正：ベンチマークのとり方を勘違いしていました。[おりさのさん](https://twitter.com/orisano/status/1336510567108898818)ありがとうございます）
 
 テストとベンチマークのコードをGo Playgroundに置いておきました。
-https://play.golang.org/p/j0hUgVfqfCe
+[https://play.golang.org/p/j0hUgVfqfCe](https://play.golang.org/p/j0hUgVfqfCe)
 
 変換した値を元に戻せるかと、大小関係を正しく判定できるかのテストを、Playground上で実行できます。
 
