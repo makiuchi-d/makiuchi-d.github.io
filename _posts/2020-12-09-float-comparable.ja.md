@@ -94,8 +94,10 @@ func FromComparable(b []byte) float64 {
 
 ### パフォーマンス
 
+(12/9 14時ころ修正：ベンチマークのとり方を勘違いしていました。[おりさのさん](https://twitter.com/orisano/status/1336510567108898818)ありがとうございます）
+
 テストとベンチマークのコードをGo Playgroundに置いておきました。
-https://play.golang.org/p/RllZPvSskv1
+https://play.golang.org/p/j0hUgVfqfCe
 
 変換した値を元に戻せるかと、大小関係を正しく判定できるかのテストを、Playground上で実行できます。
 
@@ -103,44 +105,47 @@ https://play.golang.org/p/RllZPvSskv1
 （実行環境：Kubuntu 20.04、Intel Core i7-6700、go version go1.15.5 linux/amd64）
 
 ```bash
-makki@home:~/test/compfloat$ go test -bench=. -count=10
+makki@home:~/test/compfloat$ go test -bench=. -count=5
 goos: linux
 goarch: amd64
 pkg: main/compfloat
-BenchmarkCompIEEE754-8          1000000000               0.000076 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000087 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000095 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000096 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000083 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000088 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000095 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000086 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000095 ns/op
-BenchmarkCompIEEE754-8          1000000000               0.000082 ns/op
-BenchmarkCompComparable-8       1000000000               0.000053 ns/op
-BenchmarkCompComparable-8       1000000000               0.000068 ns/op
-BenchmarkCompComparable-8       1000000000               0.000045 ns/op
-BenchmarkCompComparable-8       1000000000               0.000043 ns/op
-BenchmarkCompComparable-8       1000000000               0.000051 ns/op
-BenchmarkCompComparable-8       1000000000               0.000046 ns/op
-BenchmarkCompComparable-8       1000000000               0.000046 ns/op
-BenchmarkCompComparable-8       1000000000               0.000043 ns/op
-BenchmarkCompComparable-8       1000000000               0.000043 ns/op
-BenchmarkCompComparable-8       1000000000               0.000043 ns/op
+BenchmarkCompIEEE754-8                     16392             70919 ns/op
+BenchmarkCompIEEE754-8                     16657             71587 ns/op
+BenchmarkCompIEEE754-8                     16716             70880 ns/op
+BenchmarkCompIEEE754-8                     16734             70683 ns/op
+BenchmarkCompIEEE754-8                     16660             71165 ns/op
+BenchmarkNoInlineIEEE754-8                 17214             70974 ns/op
+BenchmarkNoInlineIEEE754-8                 17289             71064 ns/op
+BenchmarkNoInlineIEEE754-8                 17312             70658 ns/op
+BenchmarkNoInlineIEEE754-8                 17163             70416 ns/op
+BenchmarkNoInlineIEEE754-8                 17072             70185 ns/op
+BenchmarkCompComparable-8                  26832             42408 ns/op
+BenchmarkCompComparable-8                  28588             43257 ns/op
+BenchmarkCompComparable-8                  28620             42407 ns/op
+BenchmarkCompComparable-8                  26536             42542 ns/op
+BenchmarkCompComparable-8                  28347             43043 ns/op
+BenchmarkNoInlineComparable-8              18874             64007 ns/op
+BenchmarkNoInlineComparable-8              18582             63699 ns/op
+BenchmarkNoInlineComparable-8              18578             63670 ns/op
+BenchmarkNoInlineComparable-8              18460             63858 ns/op
+BenchmarkNoInlineComparable-8              18883             64681 ns/op
 PASS
-ok      main/compfloat  0.084s
+ok      main/compfloat  36.554s
 ```
 
 ![ベンチマーク結果](/images/2020-12-09/benchmark.png)
 
-処理時間がおよそ半分程度になっていることがわかります。
+バイト列のまま比較した`CompComparable`は、内部で`bytes.Compare`を呼ぶだけなのでコンパイル時にインライン展開されるようです。
+その結果、`float64`に戻して比較する`CompIEEE754`にくらべて約6割程度の処理時間になっています。
+またインライン展開を抑制した場合でも、1割程度高速化できています。
+（元の処理が小さいので、関数呼び出しオーバーヘッドの割合が大きいですね。）
 
 ## まとめ
 
 バイト列のまま大小比較可能な浮動小数点数のビット表現を作りました。
 そしてバイト列のままの比較する方が、浮動小数点数にデシリアライズして比較するより高速なことも示しました。
 
-バイト列のままの比較は、Go言語では標準パッケージの[`bytes.Compare`](https://golang.org/pkg/bytes/#Compare)でできます。
+バイト列のままの比較はベンチマークのコードでも示したとおり、Go言語では標準パッケージの[`bytes.Compare`](https://golang.org/pkg/bytes/#Compare)でできます。
 また、浮動小数点数同士だけなく他の整数型同士の場合も、下駄履き表現のビッグエンディアンとすることでバイト列のまま比較できるので、サーバ側でのプロパティ値の比較は、型による分岐が不要なシンプルな実装にすることができます（もちろん型が一致しないと比較はできません）。
 
 以上、大規模なオンライン対戦ゲームを支えるためのちょっとした工夫の紹介でした。
