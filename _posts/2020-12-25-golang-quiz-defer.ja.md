@@ -3,6 +3,8 @@ layout: post
 title: "Go言語クイズ：deferとgoroutine"
 ---
 
+これは[Goクイズ Advent Calendar 2020](https://qiita.com/advent-calendar/2020/goquiz)の12日目の穴埋め記事です。
+
 次のコードを実行するとどうなるでしょう。
 
 ```go
@@ -35,6 +37,7 @@ func main() {
 ```
 
 そうです、`defer go print("C")`でコンパイルエラーです。簡単すぎますね。
+
 [Playground](https://play.golang.org/p/rShrAUW3-nt)
 
 GoのSpecの[Defer Statements](https://golang.org/ref/spec#Defer_statements)を見ると、次のように定義されています。
@@ -42,13 +45,16 @@ GoのSpecの[Defer Statements](https://golang.org/ref/spec#Defer_statements)を�
 > DeferStmt = "defer" Expression .
 
 `defer`に続けられるのは`Expression`のみです。
+
 ところが、`go print("C")`は`Statement`（`GoStmt`）であって`Expression`ではありません。
 
 ## 問題
 
 さて、ここからが問題です。
+
 先程のコンパイルエラーを解消しました。
 これを実行するとどうなるでしょう。
+
 （処理系は Go 1.15.6 とします）
 
 ```go
@@ -111,23 +117,10 @@ func main() {
 
 ↓
 
-↓
-
-↓
-
-↓
-
-↓
-
-↓
-
-↓
-
-↓
-
 ### sync.WaitGroupの使い方
 
 最初にDeadlockするかどうかを考えます。
+
 これは標準ライブラリの[`sync.WaitGroup`](https://golang.org/pkg/sync/#WaitGroup)でごくまれにやってしまうミスの問題です。
 ドキュメントには次のようにあり、`Add(1)`したあとコピーして使うことはできません。
 
@@ -157,7 +150,8 @@ func main() {
 最後にgoroutineがど順序で呼ばれるかが問題となります。
 ただしこれはSpecに定義されているわけではなく、処理系依存です（ごめんなさい）。
 
-現在のGoのオフィシャルバイナリのgoroutineのスケジューラについては、の次の記事が大変わかりやすいです。
+現在のGoのオフィシャルバイナリのgoroutineのスケジューラについては、次の記事が大変わかりやすいです。
+
 [Golangのスケジューラあたりの話](https://qiita.com/takc923/items/de68671ea889d8df6904)
 
 問題のコードでは、わざとらしく`runtime.GOMAXPROCS(1)`を呼んでいます。
@@ -178,13 +172,13 @@ goステートメントが実行された時、そのgoroutineはすぐには実
 
 無名関数が終了したので`defer`を逆順に実行します。
 最初の`func() { go print("D") }()`によってgoroutineが作られ*キュー*に積まれます。
-次に`func() { go print("C") }()`でも同じ様にgoroutineが*キュー*に積まれます。
+次に`func() { go print("C") }()`でも同様にgoroutineが*キュー*に積まれます。
 続いて`print("B")`、`print("A")`が実行され、画面に**BA**が表示されます。
 
 ここでgoroutineが終了したので*キュー*に最後に積まれたものに処理が移ります。
 それは`print("C")`でした。画面に**C**が表示されます。
-次にまた実行可能なgoroutineを*キュー*から取り出すと、それは`print("D")`で、画面に**D*:が表示されます。
+次にまた実行可能なgoroutineを*キュー*から取り出すと、それは`print("D")`で、画面に**D**が表示されます。
 
-ここで実行可能なgoroutineがなくなってしまったので、Deadlockとなり終了します。
+ここで実行可能なgoroutineがなくなってしまったので、Deadlockとなり異常終了します。
 
 ということで、正解は3. **FEBACD**と表示されてDeadlock でした。
