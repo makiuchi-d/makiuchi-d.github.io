@@ -168,7 +168,7 @@ goステートメントはコンパイラにより[`runtime.newproc`](https://gi
 この関数内で[`runqput`を呼ぶ](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L3558)ことで新しいgoroutineを*キュー*への追加をするのですが、第三引数`next`が`true`になっています。
 
 [`runtime.runqput`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L5148-L5184)では、`next==true`のときは`p.runq`にenqueueするのではなく、[`p.runnext`](https://github.com/golang/go/blob/go1.15.6/src/runtime/runtime2.go#L593-L602)に保存します。
-この時すでに`p.runnext`にgoroutineがあるときは、すでにあったほうを`p.runq`にエンキューします。
+この時すでに`p.runnext`にgoroutineがあるときは、すでにあったほうを`p.runq`にenqueueします。
 
 そして、*キュー*からgoroutineを取り出す[`runtime.punqget`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L5261-L5288)では、
 まず`p.runnext`にgoroutineがあったらそれを、無かったら`p.runq`からdequeueするようになっています。
