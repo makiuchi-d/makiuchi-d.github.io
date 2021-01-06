@@ -161,7 +161,7 @@ func main() {
 そして現在のgoroutineが完了した時、*キュー*に最後に積まれたgoroutineを取り出して処理を始めます。
 （*キュー*と呼ばれていますが、動作はFILOのスタックです）~~
 
-#### (01/07追記)
+#### (01/06追記)
 *キュー* ([`p.runq`](https://github.com/golang/go/blob/go1.15.6/src/runtime/runtime2.go#L589-L592))はスタックではなく正しくキュー（FIFO）でした。
 
 goステートメントはコンパイラにより[`runtime.newproc`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L3535-L3564)に置き換えられます。
@@ -170,7 +170,7 @@ goステートメントはコンパイラにより[`runtime.newproc`](https://gi
 [`runtime.runqput`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L5148-L5184)では、`next==true`のときは`p.runq`にenqueueするのではなく、[`p.runnext`](https://github.com/golang/go/blob/go1.15.6/src/runtime/runtime2.go#L593-L602)に保存します。
 この時すでに`p.runnext`にgoroutineがあるときは、すでにあったほうを`p.runq`にenqueueします。
 
-そして、*キュー*からgoroutineを取り出す[`runtime.punqget`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L5261-L5288)では、
+そして、*キュー*からgoroutineを取り出す[`runtime.runqget`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L5261-L5288)では、
 まず`p.runnext`にgoroutineがあったらそれを、無かったら`p.runq`からdequeueするようになっています。
 
 
