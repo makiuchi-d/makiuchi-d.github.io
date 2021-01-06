@@ -157,9 +157,25 @@ func main() {
 問題のコードでは、わざとらしく`runtime.GOMAXPROCS(1)`を呼んでいます。
 これにより*P(Processor)*は1つだけになり、goroutineの*キュー*も1つになります。
 
-goステートメントが実行された時、そのgoroutineはすぐには実行されずに*キュー*に積まれます。
-そして現在のgoroutineが完了した時、*キュー*に最後に積まれたgoroutineを取り出して処理を始めます。
-（*キュー*と呼ばれていますが、動作はFILOのスタックです）
+~goステートメントが実行された時、そのgoroutineはすぐには実行されずに*キュー*に積まれます。~
+~そして現在のgoroutineが完了した時、*キュー*に最後に積まれたgoroutineを取り出して処理を始めます。~
+~（*キュー*と呼ばれていますが、動作はFILOのスタックです）~
+
+(01/07追記)
+*キュー* ([`p.runq`](https://github.com/golang/go/blob/go1.15.6/src/runtime/runtime2.go#L589-L592))はスタックではなく正しくキュー（FIFO）でした。
+
+goステートメントはコンパイラにより[`runtime.newproc`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L3535-L3564)に置き換えられます。
+この関数内で[`runqput`を呼ぶ](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L3558)ことで新しいgoroutineを*キュー*への追加をするのですが、第三引数`next`が`true`になっています。
+
+[`runtime.runqput`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L5148-L5184)では、`next==true`のときは`p.runq`にenqueueするのではなく、[`p.runnext`](https://github.com/golang/go/blob/go1.15.6/src/runtime/runtime2.go#L593-L602)に保存します。
+この時すでに`p.runnext`にgoroutineがあるときは、すでにあったほうを`p.runq`にエンキューします。
+
+そして、*キュー*からgoroutineを取り出す[`runtime.punqget`](https://github.com/golang/go/blob/go1.15.6/src/runtime/proc.go#L5261-L5288)では、
+まず`p.runnext`にgoroutineがあったらそれを、無かったら`p.runq`からdequeueするようになっています。
+
+
+以下、結果は同じですが細部の表現を修正しました。
+(追記ここまで。以下修正）
 
 ここで問題のコードを見ます。
 
@@ -171,11 +187,14 @@ goステートメントが実行された時、そのgoroutineはすぐには実
 ここで`wg.Wait()`を呼んでいますが、先に説明したように値渡しをしてしまっているため、`main`関数は待機状態のままです。
 
 無名関数が終了したので`defer`を逆順に実行します。
-最初の`func() { go print("D") }()`によってgoroutineが作られ*キュー*に積まれます。
-次に`func() { go print("C") }()`でも同様にgoroutineが*キュー*に積まれます。
+最初の`func() { go print("D") }()`によってgoroutineが作られ~*キュー*に積まれます。~
+`runqput`され、`p.runnext`にセットされます。
+次に`func() { go print("C") }()`でも同様にgoroutineが~*キュー*に積まれます。~
+`runqput`され、先程の`print("D")`を*キュー*に積み、新たなgoroutineを`p.runnext`にセットします。
 続いて`print("B")`、`print("A")`が実行され、画面に**BA**が表示されます。
 
-ここでgoroutineが終了したので*キュー*に最後に積まれたものに処理が移ります。
+ここでgoroutineが終了したので、~*キュー*に最後に積まれたものに処理が移ります。~
+`runqget`により次に実行するgoroutineとして`p.runnext`が取り出されます。
 それは`print("C")`でした。画面に**C**が表示されます。
 次にまた実行可能なgoroutineを*キュー*から取り出すと、それは`print("D")`で、画面に**D**が表示されます。
 
