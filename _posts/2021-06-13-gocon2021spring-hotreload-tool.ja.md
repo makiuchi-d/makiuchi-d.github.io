@@ -18,7 +18,7 @@ title: ホットリロードツールの作り方（GoCon 2021 Spring）
 また、[ちょうど裏番組だったセッション](https://gocon.jp/sessions/session-a3-l/)でも似たような方法が
 チャネルの活用方法のひとつとして紹介されていました。
 
-```Go
+```go
 	trg := make(chan struct{}, 1)
 
 	go func() {
