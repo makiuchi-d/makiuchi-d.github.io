@@ -109,7 +109,7 @@ finally句が実行されないのは例外がハンドルされていない場�
 ```
 
 `Main()`の中の一番外側をtry-catchで囲み、例外をcatchしたらすぐthrowしているだけです。
-このように例外を一旦catchすることでようやく、finally句の実行が保証されるのです。
+このように例外を一旦catchすることでようやくfinally句の実行が保証され、usingしたIDisposableなオブジェクトも確実にDisposeされるようになります。
 
 ## まとめ
 
