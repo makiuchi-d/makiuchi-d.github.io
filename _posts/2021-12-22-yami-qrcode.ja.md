@@ -71,7 +71,16 @@ Format情報からエラー訂正レベルを読み取って計算すれば良�
 Positionパターンは縦横ともに黒白黒白黒が1:1:3:1:1の場所を探せと規格としても書かれている。
 見つけてくれると信じて、中央を十字に残すように端の方から消していく。
 
+あとはTimingパターン。
+元ツイートのリプライでは何人も大事だから消しちゃダメと言っているけど、実はそんなこと無かったりする。
+実際ZXingでは使わずに、PositionパターンとAlignmentパターンだけで歪み補正している。
+QRコードリーダーの実装次第にはなるけれど、消しても大丈夫な可能性がある。
+
 ## 本当の闇のゲームの始まりだぜ
 
 ここまでやったらもう理論的に消せる場所は残っていないはず。
 自分の運命を信じよう。
+
+## おまけ：QRコードジェンガやってみた
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">多分これが限界。 <a href="https://t.co/42FPIzSfdO">https://t.co/42FPIzSfdO</a> <a href="https://t.co/PfY5sRURgG">pic.twitter.com/PfY5sRURgG</a></p>&mdash; MakKi (@makki_d) <a href="https://twitter.com/makki_d/status/1473343394428899328?ref_src=twsrc%5Etfw">December 21, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
