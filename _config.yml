@@ -1,5 +1,5 @@
 theme: minima
-google_analytics: UA-200254108-1
+google_analytics: G-EQMWS8F3QG
 plugins:
  - jekyll-feed
  - jekyll-seo-tag
