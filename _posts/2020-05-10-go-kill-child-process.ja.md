@@ -10,7 +10,12 @@ Goで子プロセスとして外部コマンドを呼び出すには、標準パ
 
 ここでは、孤児プロセスを生まないように安全に子プロセスをKillする方法を紹介します。
 
-※手元の実行環境はLinuxですが、macOSもPOSIXなのできっと同じです。Windowsは知りません。
+※手元の実行環境はLinuxですが、macOSもPOSIXなのできっと同じです。~Windowsは知りません。~
+
+（2023/04/27追記）
+Windowsでは、[`taskkill`](https://learn.microsoft.com/ja-jp/windows-server/administration/windows-commands/taskkill)コマンドに`/t`を付けることで子プロセスを含めてKillできます。
+また、`/pid`には`cmd.Process.Pid`をそのまま渡せます。
+これを`os/exec`を使って呼び出すと良いでしょう。
 
 （2021/01/25：SIGKILLでは孫プロセスが孤児として残るケースを追記）
 
