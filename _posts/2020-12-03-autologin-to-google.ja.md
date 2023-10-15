@@ -3,6 +3,11 @@ layout: post
 title: "GoogleのサービスをPuppeteerで自動操作する方法 - ログイン編"
 ---
 
+<p style="background-color:bisque;border-left:0.3em solid orange;padding:0.5em">
+<strong>⚠ この記事の方法は現在使えません。</strong><br>
+Googleのサービスの挙動が変わり、ログイン済みCookieを流用するだけでは利用できなくなりました。ご注意ください。
+</p>
+
 Webサービスの自動操作には様々な手段がありますが、[Puppeteer](https://pptr.dev/)や[Selenium](https://www.selenium.dev/)といったブラウザ本体を自動操縦できるツールがとても便利です。
 ところが、GoogleのサービスをPuppeteerやSeleniumで利用しようとした時、ログインフォームにアカウント情報を入力してもログインできないことがあります。
 

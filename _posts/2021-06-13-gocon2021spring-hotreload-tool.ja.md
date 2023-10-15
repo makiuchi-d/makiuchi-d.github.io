@@ -3,8 +3,8 @@ layout: post
 title: ホットリロードツールの作り方（GoCon 2021 Spring）
 ---
 
-去る4月24日に開催された[Go Conference Online 2021 Spring](https://gocon.jp/)にて、
-「[ホットリロードツールの作り方](https://gocon.jp/sessions/session-b3-l/)」という発表をしました。
+去る4月24日に開催された[Go Conference Online 2021 Spring](https://gocon.jp/2021spring/)にて、
+「[ホットリロードツールの作り方](https://gocon.jp/2021spring/sessions/session-b3-l/)」という発表をしました。
 
 <script async class="speakerdeck-embed" data-id="0a3c72815795454aa550c6092b26239a" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
 
@@ -15,7 +15,7 @@ title: ホットリロードツールの作り方（GoCon 2021 Spring）
 ## 発表の補足：容量1チャネルを使ったトリック
 
 当日質問も頂いたのですが、少しわかりにくかったと思うので補足します。
-また、[ちょうど裏番組だったセッション](https://gocon.jp/sessions/session-a3-l/)でも似たような方法が
+また、[ちょうど裏番組だったセッション](https://gocon.jp/2021spring/sessions/session-a3-l/)でも似たような方法が
 チャネルの活用方法のひとつとして紹介されていました。
 
 ```go
