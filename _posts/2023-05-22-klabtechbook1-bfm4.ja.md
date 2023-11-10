@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "テキストマクロプロセッサ「M4」のチューリング完全性について"
+title: "テキストマクロプロセッサ「M4」のチューリング完全性について (KLabTechBook Vol.1)"
 ---
 
 この記事は[技術書典3](https://techbookfest.org/event/tbf03)にて頒布した「KLabTechBook Vol.1」に掲載したものです。

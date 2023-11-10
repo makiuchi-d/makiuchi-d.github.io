@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Cygwin環境でDockerを快適に使うために"
+title: "Cygwin環境でDockerを快適に使うために (KLabTechBook Vol.2)"
 ---
 
 この記事は2018年4月22日に[技術書典4](https://techbookfest.org/event/tbf04)にて頒布した「KLabTechBook Vol.2」に掲載したものです。
