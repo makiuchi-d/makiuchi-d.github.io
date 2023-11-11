@@ -79,9 +79,17 @@ Unhandled exception. System.Exception: Exception of type 'System.Exception' was 
     }
 ```
 
-なぜfinallyの内容が実行されなかったのか、そのヒントは[try-finallyのドキュメント](https://docs.microsoft.com/ja-jp/dotnet/csharp/language-reference/keywords/try-finally)にありました。
+なぜfinallyの内容が実行されなかったのか、そのヒントは[try-finallyのドキュメント(Internet Archive)](https://web.archive.org/web/20220211193315/https://docs.microsoft.com/ja-jp/dotnet/csharp/language-reference/keywords/try-finally)にありました。
 
 > ハンドルされている例外では、関連する finally ブロックの実行が保証されます。 ただし、例外がハンドルされていない場合、finally ブロックの実行は、例外のアンワインド操作のトリガー方法に依存します。 つまり、コンピューターの設定に依存するということでもあります。 finally 句が実行されないのは、プログラムが直ちに停止している場合のみです。 これの例は、IL ステートメントが壊れているために InvalidProgramException がスローされる場合です。 ほとんどのオペレーティング システムでは、プロセスの停止とアンロードの一環として、リソースの適切なクリーンアップが行われます。
+
+<p style="background-color:bisque;border-left:0.3em solid orange;padding:0.5em">
+<strong>⚠ .NETのドキュメントが更新されました</strong> (2023/11/11追記)<br>
+ここで引用していたページが削除され、別ページにリダイレクトされるようになっていました。
+確認できるよう、リンクをInternetArchiveのものに置き換えてあります。
+
+なお、.NET 7.0においても、Linux版での動作はこの記事執筆時と変わっていません。
+</p>
 
 よく読むと「例外がハンドルされていない場合、環境によってはfinally句が実行されないことがある」と書かれているではありませんか。
 例外を握りつぶしたりしないお行儀の良いプログラムを書いたことで、逆に期待通りに動いてくれない罠にはまっていたわけです。
