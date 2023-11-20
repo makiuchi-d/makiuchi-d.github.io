@@ -3,7 +3,7 @@ layout: post
 title: "2次元コードDataMatrix (KLabTechBook Vol.5)"
 ---
 
-この記事は209年9月22日に開催された[技術書典7](https://techbookfest.org/event/tbf07)にて頒布した「KLabTechBook Vol.5」に掲載したものです。
+この記事は2019年9月22日に開催された[技術書典7](https://techbookfest.org/event/tbf07)にて頒布した「KLabTechBook Vol.5」に掲載したものです。
 
 現在開催中の[技術書典15](https://techbookfest.org/event/tbf15)オンラインマーケットにて新刊「[KLabTechBook Vol.12](https://techbookfest.org/product/d20GG5Femwp1rTWSveSiHF)」を頒布（電子版無料、紙+電子 500円）しています。
 また、既刊も在庫があるものは物理本を[オンラインマーケット](https://techbookfest.org/organization/5654456649646080)で頒布しているほか、
@@ -25,7 +25,7 @@ QRコードの登場から25年、2次元コードはもはや私達の生活に
 変わったところでは**HCCB**や**カメレオンコード**といったカラフルなものもあります。
 図1にいくつか挙げてみました[^1]。
 
-![さまざまな2次元コード. A: Uni-Voice; B: PDF-417; C: Aztec; D: HCCB](/images/2023-11-17/2d_codes.png)
+![さまざまな2次元コード. A: Uni-Voice; B: PDF-417; C: Aztec; D: HCCB](/images/2023-11-18/2d_codes.png)
 <br />▲図1 さまざまな2次元コード. A: Uni-Voice; B: PDF-417; C: Aztec; D: HCCB
 
 [^1]: 画像出典 A: [https://www.javis.jp/](https://www.javis.jp/) B: [https://en.wikipedia.org/wiki/PDF417](https://en.wikipedia.org/wiki/PDF417) C: [https://en.wikipedia.org/wiki/Aztec_Code](https://en.wikipedia.org/wiki/Aztec_Code) D: [https://en.wikipedia.org/wiki/High_Capacity_Color_Barcode](https://en.wikipedia.org/wiki/High_Capacity_Color_Barcode)
@@ -33,7 +33,7 @@ QRコードの登場から25年、2次元コードはもはや私達の生活に
 この章では、電子機器や医療機器産業の分野でよく使われている**DataMatrix**について、
 QRコードと比較しながら紹介したいと思います。
 
-<img src="/images/2023-11-17/laptop.png" width="40%" alt="ノートPCに貼られているDataMatrix" />
+<img src="/images/2023-11-18/laptop.png" width="40%" alt="ノートPCに貼られているDataMatrix" />
 <br />▲図2 ノートPCに貼られているDataMatrix
 
 ## DataMatrixとは
@@ -49,7 +49,7 @@ DataMatrixは最小10×10セルから最大144×144セルで、
 一般的な英文（アルファベットの大文字小文字と数字、いくつかの記号）であれば最大2,335文字を格納できます。
 また、正方形だけでなく長方形のパターンも用意されており、細長い領域への印字もしやすくなっています。
 
-![長方形のDataMatrix](/images/2023-11-17/wide.png)
+![長方形のDataMatrix](/images/2023-11-18/wide.png)
 <br />▲図3 長方形のDataMatrix
 
 それでは、DataMatrixの特徴についてQRコードと比較しながら見ていきましょう。
@@ -61,7 +61,7 @@ QRコードには特徴的な3つの検出パターンがあり、これを目�
 上と右にはタイミングパターンとして白と黒のセルが交互に配置されています。
 大きなサイズのDataMatrixでは、データ領域が分割されて直線と白黒交互のセルからなる位置合わせパターンが挿入されます。
 
-<img src="/images/2023-11-17/patterns.png" width="60%" alt="DataMatrixの固定パターン. 右は位置合わせパターンのあるもの" />
+<img src="/images/2023-11-18/patterns.png" width="60%" alt="DataMatrixの固定パターン. 右は位置合わせパターンのあるもの" />
 <br />▲図4 DataMatrixの固定パターン. 右は位置合わせパターンのあるもの
 
 DataMatrixの固定パターンはこれだけで、内側はすべてデータ領域となっています。
@@ -97,7 +97,7 @@ DataMatrixでは右上の切り欠きに隣の文字の左下をはめ込み、�
 そしてデータ領域からはみ出る部分は、反対側の辺のちょうどはまり込む空き領域に配置します。
 この配置の決定方法はISOやJISに図とC言語のコードで掲載されています。
 
-<img src="/images/2023-11-17/sequence.png" width="60%" alt="ワードの配置順. 右下のセルが斜めの線上に並ぶように配置する" />
+<img src="/images/2023-11-18/sequence.png" width="60%" alt="ワードの配置順. 右下のセルが斜めの線上に並ぶように配置する" />
 <br />▲図5 ワードの配置順. 右下のセルが斜めの線上に並ぶように配置する
 
 ## エンコード方式
@@ -148,7 +148,7 @@ QRコードではマスクを掛けてデータを配置しますが、DataMatri
 
 [^3]: [データの配置方法](#データの配置方法)と、左下端・右上端の例外的な配置だけ覚えていれば簡単に構築できます。
 
-![URLを格納したDataMatrixと各ビットの配置](/images/2023-11-17/readable.png)
+![URLを格納したDataMatrixと各ビットの配置](/images/2023-11-18/readable.png)
 <br />▲図6 URLを格納したDataMatrixと各ビットの配置
 
 ## なぜQRコードのほうが普及しているのか
@@ -173,3 +173,5 @@ DataMatrixが優っているのはデータの集積度、
 本章ではDataMatrixという二次元コードをQRコードと比較しながら紹介しました。
 普段あまり見かけることのないDataMatrixですが、基本的にはQRコードと似たようなものです。
 見かけたときはぜひDataMatrix対応のリーダーで読み取ってみてください。
+
+---
