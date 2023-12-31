@@ -108,7 +108,7 @@ DataMatrixでも同様に、1バイトをそのまま格納する**Base256**モ�
 **ASCII**、**C40**、**テキスト**、**X12**、**EDIFACT**というモードがあり、
 最適なモードに切り替えながらエンコードしていきます。
 
-[^2]: [KLabTechBook Vol.4「第3章 QRコードマニアックス―数字・英数字・漢字モード」](klabtechbook4-qrcode-maniacs)参照
+[^2]: [KLabTechBook Vol.4「第3章 QRコードマニアックス―数字・英数字・漢字モード」](/2023/11/13/klabtechbook4-qrcode-maniacs.ja.html)参照
 
 ここで、"`http://klabgames.tech.blog.jp.klab.com/`"をエンコードする例をリスト1に示します。
 
