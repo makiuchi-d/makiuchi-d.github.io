@@ -4,7 +4,7 @@ title: GoとテストとインプロセスDB（GoCon mini 2023 in KYOTO）
 ---
 
 
-去る12月2日に京都で開催され[Go Conference mini 2023 Winter IN KYOTO](https://kyotogo.connpass.com/event/285351/)にて、
+去る12月2日に京都で開催された[Go Conference mini 2023 Winter IN KYOTO](https://kyotogo.connpass.com/event/285351/)にて、
 「GoとテストとインプロセスDB」という発表(LT)をしてきました。
 
 <script defer class="speakerdeck-embed" data-id="d36d8e6faf534ce492b48fc7df5937bb" data-ratio="1.7772511848341233" src="//speakerdeck.com/assets/embed.js"></script>
