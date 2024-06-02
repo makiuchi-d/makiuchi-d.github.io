@@ -33,7 +33,7 @@ KLabの多くのタイトルはUnityで制作していますが、この同期�
 この章では、KLabの同期通信基盤のために開発した独自のシリアライズフォーマットについて、
 その特徴や工夫した点を紹介したいと思います。
 
-[^1]: https://www.photonengine.com/
+[^1]: [https://www.photonengine.com/](https://www.photonengine.com/)
 
 ## なぜ独自フォーマットが必要だったのか
 
@@ -52,14 +52,14 @@ C#のときの型がGoからは分らなくなってしまいます。
 これでは多くのプロジェクトで使える共通のサーバーを作るには不向きです。
 できるならクライアントだけで独自のデータ型を追加できるのが理想です。
 
-[^2]: https://msgpack.org/
-[^3]: https://developers.google.com/protocol-buffers
+[^2]: [https://msgpack.org/](https://msgpack.org/)
+[^3]: [https://developers.google.com/protocol-buffers](https://developers.google.com/protocol-buffers)
 
 このようなニッチな要求を満たすものはまず存在しないので作ることにしました。
 ここで紹介するシリアライザはGitHubにて公開しています[^4]。
 あわせてご覧ください[^5]。
 
-[^4]: https://github.com/KLab/wsnet2-serializer
+[^4]: [https://github.com/KLab/wsnet2-serializer](https://github.com/KLab/wsnet2-serializer)
 [^5]: 紙面に掲載したコード片は一部簡略化などの変更をしています
 
 ## 独自フォーマットの特徴
@@ -218,7 +218,7 @@ public class SerialReader
 浮動小数点数でもIEEE 754の表現からビット操作して、整数型と同じようにバイト列のまま大小比較できるようにしました。
 詳しくは筆者のblog記事[^7]をご覧ください。
 
-[^7]: http://makiuchi-d.github.io/2020/12/09/float-comparable.ja.html
+[^7]: [http://makiuchi-d.github.io/2020/12/09/float-comparable.ja.html]({% post_url 2020-12-09-float-comparable %})
 
 ### 文字列型
 
