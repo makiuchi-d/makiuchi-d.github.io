@@ -5,7 +5,7 @@ title: "乱数はどこから来るか―TinyGo RP2040の場合"
 
 <p style="background-color:lightcyan;border-left:0.3em solid cyan;padding:0.5em">
 <strong>ℹ️</strong>
-この記事は <a href="https://qiita.com/advent-calendar/2025/tinygo">TinyGo Advent Calendar 2025</a> 7 日目の記事です。
+この記事は <a href="https://qiita.com/advent-calendar/2025/tinygo">TinyGo Advent Calendar 2025</a> 7日目の記事です。
 </p>
 
 [TinyGo Keeb Tour](https://tinygo-keeb.org/)で作成する
