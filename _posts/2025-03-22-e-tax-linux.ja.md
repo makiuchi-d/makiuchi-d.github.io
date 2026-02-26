@@ -3,6 +3,16 @@ layout: post
 title: "完全にLinuxのみで確定申告する現時点で一番簡単な方法"
 ---
 
+<p style="background-color:pink;border-left:0.3em solid red;padding:0.5em">
+<strong>⚠ ID・パスワード方式はまもなく使えなくなりそうです</strong><br>
+この記事で紹介しているID・パスワード方式に必要なIDとパスワードの新規発行が停止してしまいました。
+すでに発行済みの方は令和7年分の申告にはまだつかえるようですが、近いうちに廃止されると思われます。
+おとなしくUser-Agentを偽装して国を騙しながら申告しましょう。<br>
+<a href="https://www.e-tax.nta.go.jp/topics/2025/topics_20250925.htm">
+ID・パスワードの新規発行停止について| 【e-Tax】国税電子申告・納税システム(イータックス)
+</a>
+</p>
+
 少し前に[Linuxで確定申告 2024年度版](https://qiita.com/nanbuwks/items/3ceb0b3f8e15a8aa3dbf)が話題になっていましたが、
 私がここ数年Linuxのみ（Kubuntu + Google Chrome）で行っている、一番簡単な確定申告の方法を紹介します。
 
