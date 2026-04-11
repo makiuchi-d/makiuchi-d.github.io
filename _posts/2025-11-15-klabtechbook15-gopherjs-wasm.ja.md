@@ -3,7 +3,7 @@ layout: post
 title: "GopherJSからWebAssemblyへ: Go-TypeScript連携の再構築 (KLabTechBook Vol. 15)"
 ---
 
-この記事は2024年11月2日から開催された[技術書典18](https://techbookfest.org/event/tbf18)にて頒布した「[KLabTechBook Vol. 15](https://techbookfest.org/product/xmtJPdPuamKDgrnmkek9pn)」に掲載したものです。
+この記事は2025年5月31日から開催された[技術書典18](https://techbookfest.org/event/tbf18)にて頒布した「[KLabTechBook Vol. 15](https://techbookfest.org/product/xmtJPdPuamKDgrnmkek9pn)」に掲載したものです。
 
 現在開催中の[技術書典19](https://techbookfest.org/event/tbf19)オンラインマーケットにて新刊「[KLabTechBook Vol.16](https://techbookfest.org/product/aVbpmUVUwehW3Mym5rYrzN)」を頒布（電子版無料、紙+電子 500円）しています。
 また、既刊も在庫があるものは物理本を[オンラインマーケット](https://techbookfest.org/organization/5654456649646080)で頒布しているほか、
